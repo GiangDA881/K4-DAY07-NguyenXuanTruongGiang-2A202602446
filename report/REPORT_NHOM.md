@@ -1,13 +1,27 @@
 # Báo Cáo Nhóm — Lab 7: Embedding & Vector Store
 
-**Nhóm:** Cocacola — Lớp K4A  
-**Thành viên:**  
-1. Nguyễn Xuân Trường Giang — MSSV: 2A202602446 (Chiến lược: FixedSize + Metadata Filter)  
-2. Hải (Chiến lược: Recursive + Baseline)  
-3. Hoàn (Chiến lược: Chunker theo Heading)  
-**Ngày nộp:** 19/09/2026  
+**Nhóm:** Cocacola  
+**Chủ đề:** Dịch vụ và quy định dành cho sinh viên tại Đại học Quốc gia Hà Nội (ĐHQGHN)  
+**Ngày:** 2026-09-19  
+**Thành viên:**
 
-> **Nộp 1 bản / nhóm.** Phần cá nhân (hướng tiếp cận, kết quả riêng, dự đoán…) mỗi thành viên nộp riêng trong `REPORT_CANHAN.md`. Chi tiết thang điểm: `docs/SCORING.md`.
+1. Nguyễn Nhân Sâm — MSSV 2A202602672 — SentenceChunker + metadata filter
+2. Nguyễn Xuân Trường Giang — MSSV 2A202602446 — FixedSizeChunker + metadata filter
+3. Đào Đức Hải — MSSV 2A202602752 — RecursiveChunker + metadata filter
+4. Phan Trọng Hoàn — MSSV 2A202602954 — HeadingChunker + metadata filter
+
+### Phân công điều phối
+
+Các vai R1–R3 là trách nhiệm điều phối cộng thêm; cả bốn thành viên vẫn tự code chiến lược riêng và tự chạy cùng 5 benchmark queries trên corpus nhóm.
+
+| Vai | Người phụ trách | Trách nhiệm | Minh chứng trong repo |
+|---|---|---|---|
+| **R1 · Data** | Nguyễn Xuân Trường Giang | Chốt chủ đề, kiểm tra 6 tài liệu, metadata, URL nguồn và manifest | `data/vnu-rag-data/*.md`, `sources.csv`, mục 1 |
+| **R2 · Benchmark** | Nguyễn Nhân Sâm | Chốt 5 query, viết gold answer, đối chiếu từng gold answer với tài liệu thật | Mục 3 và kết quả benchmark của 4 thành viên |
+| **R3 · Strategy** | Phan Trọng Hoàn | Bảo đảm chiến lược không trùng, phụ trách HeadingChunker, chạy baseline chung | Mục 2, bảng so sánh, kết quả HeadingChunker |
+| **Hỗ trợ kiểm thử và phân tích** | Đào Đức Hải | Chạy RecursiveChunker, kiểm tra top-3, ghi failure case và hỗ trợ demo | Mục 2, failure analysis |
+
+> **Nộp 1 bản / nhóm.** Báo cáo cá nhân của từng thành viên nộp riêng trong `REPORT_CANHAN.md`. Corpus nhóm nằm trong `data/vnu-rag-data/` và có manifest tại `data/vnu-rag-data/sources.csv`.
 
 **Tổng điểm phần nhóm: 40** = Lựa chọn tài liệu (10) + Thiết kế chiến lược (15) + Chất lượng truy xuất (10) + Thuyết trình (5).
 
@@ -15,159 +29,157 @@
 
 ## 1. Lựa chọn tài liệu (Document Set Quality) — Nhóm (10 điểm)
 
-### Chủ đề (Domain) & Lý Do Chọn
+### Chủ đề và lý do chọn
 
-**Chủ đề:** Dịch vụ & Quy chế Học vụ Đại học (VinUni University Regulations & Services)
-
-**Tại sao nhóm chọn chủ đề này?**
-> Nhóm chọn chủ đề quy chế và dịch vụ học vụ đại học vì đây là miền dữ liệu thực tế có tính cấu trúc cao, chứa nhiều điều khoản số liệu cụ thể (hạn mức tín chỉ, số ngày mượn sách, hạn nộp học phí, điều kiện học bổng) và đặc biệt phân chia đối tượng rõ ràng (`student` vs `faculty`), tạo tiền đề lý tưởng để kiểm chứng sức mạnh của Metadata Filtering và Chunking Strategy.
+Nhóm xây dựng knowledge base về các dịch vụ và quy định mà sinh viên ĐHQGHN thường cần tra cứu: đăng ký học phần, học phí, học bổng, thư viện, ký túc xá và kiểm tra/phúc khảo. Đây là chủ đề phù hợp với yêu cầu K4-L3A vì các câu trả lời phải dựa trên quy định công khai, có thể truy vết, đồng thời có những trường hợp dữ liệu không đủ để hệ thống phải nói rõ giới hạn thay vì suy đoán.
 
 ### Danh sách tài liệu (Data Inventory)
 
-| # | Tên tài liệu | Nguồn (Source URL) | Ngày lấy / Phiên bản | Số ký tự | Metadata đã gán |
-|---|--------------|------------|--------------------|----------|-----------------|
-| 1 | Quy chế đăng ký học phần và rút môn học | https://vinuni.edu.vn/academic-regulations/course-registration | 2026-09-18 / 2026.1 | 1,515 | `doc_id`: course-registration, `audience`: student, `department`: academic-affairs |
-| 2 | Quy định mượn trả tài liệu thư viện cho sinh viên | https://vinuni.edu.vn/library/regulations-student | 2026-09-18 / 2026.1 | 1,280 | `doc_id`: library-services, `audience`: student, `department`: library |
-| 3 | Quy định mượn trả tài liệu thư viện cho giảng viên | https://vinuni.edu.vn/library/regulations-faculty | 2026-09-18 / 2026.1 | 1,180 | `doc_id`: library-faculty, `audience`: faculty, `department`: library |
-| 4 | Quy định về nộp học phí và chính sách gia hạn | https://vinuni.edu.vn/finance/tuition-payment-policy | 2026-09-18 / 2026.1 | 1,350 | `doc_id`: tuition-payment, `audience`: student, `department`: finance |
-| 5 | Chính sách học bổng khuyến khích học tập | https://vinuni.edu.vn/scholarships/merit-based | 2026-09-18 / 2026.1 | 1,480 | `doc_id`: scholarship-policy, `audience`: student, `department`: student-affairs |
-| 6 | Quy chế phúc khảo bài thi kết thúc học phần | https://vinuni.edu.vn/examinations/regrade-appeal | 2026-09-18 / 2026.1 | 1,290 | `doc_id`: exam-regrade, `audience`: student, `department`: academic-affairs |
+| # | Tên tài liệu | Nguồn | Ngày lấy / phiên bản | Số ký tự nội dung | Metadata |
+|---|---|---|---|---:|---|
+| 1 | Đăng ký và rút học phần | [Nguồn quy chế ĐHQGHN](https://fos.ussh.vnu.edu.vn/vi/laws/detail/Quy-che-dao-tao-dai-hoc-tai-Dai-hoc-Quoc-gia-Ha-Noi-Ap-dung-tu-khoa-QH-2022-X-5/) | 2026-09-19 / 2022-10-21 | 2.4k | `student`, `academic_affairs`, `course_registration`, `vi` |
+| 2 | Nguyên tắc học phí | [Nguồn quy chế ĐHQGHN](https://fos.ussh.vnu.edu.vn/vi/laws/detail/Quy-che-dao-tao-dai-hoc-tai-Dai-hoc-Quoc-gia-Ha-Noi-Ap-dung-tu-khoa-QH-2022-X-5/) | 2026-09-19 / 2022-10-21 | 2.2k | `student`, `finance`, `tuition`, `vi` |
+| 3 | Học bổng và quyền lợi | [Nguồn quy chế ĐHQGHN](https://fos.ussh.vnu.edu.vn/vi/laws/detail/Quy-che-dao-tao-dai-hoc-tai-Dai-hoc-Quoc-gia-Ha-Noi-Ap-dung-tu-khoa-QH-2022-X-5/) | 2026-09-19 / 2022-10-21 | 1.8k | `student`, `student_affairs`, `scholarship`, `vi` |
+| 4 | Dịch vụ thư viện và tri thức số | [VNU-LIC](https://lic.vnu.edu.vn/) | 2026-09-19 / not-stated | 1.6k | `all`, `library`, `library`, `vi` |
+| 5 | Dịch vụ nội trú và ký túc xá | [Trung tâm Hỗ trợ Sinh viên ĐHQGHN](https://css.vnu.edu.vn/) | 2026-09-19 / not-stated | 1.5k | `student`, `student_affairs`, `dormitory`, `vi` |
+| 6 | Kiểm tra, thi và xem xét kết quả điểm | [Nguồn quy chế ĐHQGHN](https://fos.ussh.vnu.edu.vn/vi/laws/detail/Quy-che-dao-tao-dai-hoc-tai-Dai-hoc-Quoc-gia-Ha-Noi-Ap-dung-tu-khoa-QH-2022-X-5/) | 2026-09-19 / 2022-10-21 | 2.5k | `student`, `academic_affairs`, `grade_appeal`, `vi` |
 
-**Danh sách kiểm tra quản trị dữ liệu (Data governance checklist):**
-- [x] Tập tài liệu (Corpus) chỉ chứa nguồn công khai/được phép dùng và không chứa dữ liệu cá nhân, thông tin đăng nhập hoặc tài liệu nội bộ.
-- [x] Mỗi tài liệu có `source_url`, `retrieved_at`, `document_version` (hoặc ngày hiệu lực) trong metadata.
-- [x] `sources.csv` được lưu tại `data/university/sources.csv`, khớp chính xác 1-1 với 6 tài liệu `.md`.
+Các file trong corpus là **regulation/service summaries có dẫn nguồn**, không phải bản sao toàn văn. Những giới hạn được ghi ngay trong tài liệu, chẳng hạn không có mức học phí cụ thể, giá phòng hoặc thời hạn phúc khảo thống nhất. Nhóm không đưa dữ liệu cá nhân, thông tin đăng nhập hay tài liệu nội bộ vào repo.
 
-### Cấu trúc Metadata (Metadata Schema)
+### Cấu trúc metadata
 
-| Trường metadata | Kiểu | Ví dụ giá trị | Tại sao hữu ích cho truy xuất (retrieval)? |
-|----------------|------|---------------|-------------------------------|
-| `doc_id` | string | `library-services` | Định danh tài liệu gốc, hỗ trợ nhóm các chunk và phục vụ hàm `delete_document()`. |
-| `audience` | string | `student`, `faculty` | Phân tách đối tượng bạn đọc; yếu tố then chốt giúp `search_with_filter()` không bị nhầm lẫn giữa quy định của sinh viên và giảng viên. |
-| `department` | string | `academic-affairs`, `library` | Giúp lọc chính xác theo phòng ban quản lý, tăng tốc độ và độ chính xác khi truy vấn chuyên sâu. |
-| `category` | string | `registration`, `tuition` | Phân loại nghiệp vụ học vụ, cho phép truy xuất theo nhóm chuyên đề nghiệp vụ. |
-| `language` | string | `vi` | Định vị ngôn ngữ tài liệu phục vụ đa ngôn ngữ. |
+| Trường | Kiểu | Ví dụ | Giá trị cho retrieval |
+|---|---|---|---|
+| `doc_id` | string | `02_tuition` | Định danh và truy vết tài liệu |
+| `source_url` | string | URL chính thức | Kiểm chứng nguồn |
+| `retrieved_at` | date | `2026-09-19` | Theo dõi thời điểm thu thập |
+| `document_version` | string | `2022-10-21` / `not-stated` | Phân biệt phiên bản/quy định |
+| `audience` | enum | `student`, `all` | Lọc đúng đối tượng hỏi |
+| `department` | string | `finance`, `library` | Thu hẹp phạm vi nghiệp vụ |
+| `category` | string | `tuition`, `dormitory` | Phân loại chủ đề |
+| `language` | string | `vi` | Lọc theo ngôn ngữ |
+
+**Checklist quản trị dữ liệu:**
+- [x] 6 tài liệu có nguồn công khai và có URL truy vết.
+- [x] Không chứa dữ liệu cá nhân, thông tin đăng nhập hoặc nội dung nội bộ.
+- [x] Mỗi file có `source_url`, `retrieved_at`, `document_version`, `audience` và metadata bổ sung.
+- [x] Corpus chính thức là `data/vnu-rag-data/`; manifest là `data/vnu-rag-data/sources.csv`.
 
 ---
 
 ## 2. Thiết kế chiến lược (Strategy Design) — Nhóm (15 điểm)
 
-> Mỗi thành viên thử **một chiến lược khác nhau** trên cùng bộ tài liệu; nhóm tổng hợp và so sánh ở đây.
+### Phân tích chiến lược trên cùng corpus
 
-### Phân tích đường cơ sở (Baseline Analysis)
-
-Chạy `ChunkingStrategyComparator().compare()` trên 3 tài liệu tiêu biểu trong corpus (độ dài chunk_size=300):
-
-| Tài liệu | Chiến lược (Strategy) | Số lượng Chunk | Độ dài trung bình | Giữ được ngữ cảnh không? |
-|-----------|----------|-------------|------------|-------------------|
-| `course-registration.md` | FixedSizeChunker (`fixed_size`) | 6 | 260.0 | Trung bình (cắt ngang một số câu tại biên chunk) |
-| | SentenceChunker (`by_sentences`) | 5 | 280.6 | Tốt (giữ nguyên câu, nhưng một số đoạn điều khoản dài bị gom chung) |
-| | RecursiveChunker (`recursive`) | 8 | 174.9 | Rất tốt (chia nhỏ theo đoạn `\n\n` và câu, giữ trọn vẹn ngữ nghĩa) |
-| `library-services.md` | FixedSizeChunker (`fixed_size`) | 5 | 254.8 | Trung bình (các điều khoản mượn bị ngắt giữa chừng) |
-| | SentenceChunker (`by_sentences`) | 4 | 287.2 | Tốt (câu hoàn chỉnh, độ dài đồng đều) |
-| | RecursiveChunker (`recursive`) | 6 | 191.0 | Rất tốt (tách riêng từng điều khoản mục 1, mục 2 rõ ràng) |
-| `scholarship-policy.md` | FixedSizeChunker (`fixed_size`) | 5 | 285.2 | Khá (độ dài ổn định) |
-| | SentenceChunker (`by_sentences`) | 5 | 260.0 | Tốt (các mức GPA nằm trọn trong câu) |
-| | RecursiveChunker (`recursive`) | 8 | 162.0 | Rất tốt (tách riêng từng mục học bổng Xuất sắc/Giỏi/Khá) |
+| Thành viên | Chiến lược | Tổng chunk | Độ dài trung bình | Nhận xét |
+|---|---|---:|---:|---|
+| Nguyễn Nhân Sâm | SentenceChunker | **40** | **261.4** | Giữ ranh giới câu, Gemini đúng chủ đề trong top-3 cả 5 query |
+| Nguyễn Xuân Trường Giang | FixedSize, size 350, overlap 50 | 97 | 339.8 | Dễ kiểm soát kích thước nhưng có thể cắt giữa câu/điều |
+| Đào Đức Hải | Recursive, size 350 | 43 | 246.1 | Giữ ranh giới đoạn/câu tốt hơn, ít chunk vụn |
+| Phan Trọng Hoàn | HeadingChunker, max 500 | 35 | 313.5 | Giữ heading và ngữ cảnh điều khoản tốt nhất |
 
 ### Chiến lược của từng thành viên
 
-**Thành viên 1 — Nguyễn Xuân Trường Giang (2A202602446)**
-- **Loại chiến lược:** FixedSizeChunker (`chunk_size=350`, `overlap=50`) + Metadata Filter (`audience="student"`)
-- **Mô tả & lý do chọn cho chủ đề này:** Phân đoạn văn bản thành các khối có kích thước đều đặn 350 ký tự với độ chồng lấn 50 ký tự để duy trì tính liên tục của ngữ cảnh tại các ranh giới cắt. Kết hợp với Pre-filtering metadata để lọc trước đối tượng `student`, loại bỏ nguy cơ nhầm lẫn với tài liệu của giảng viên.
-- **Code snippet:**
-```python
-chunker = FixedSizeChunker(chunk_size=350, overlap=50)
-chunks = chunker.chunk(document_body)
-results = store.search_with_filter(query, top_k=3, metadata_filter={"audience": "student"})
-```
+**Nguyễn Nhân Sâm — SentenceChunker**
 
-**Thành viên 2 — Hải**
-- **Loại chiến lược:** RecursiveChunker (`chunk_size=400`, baseline separators=`["\n\n", "\n", ". ", " "]`)
-- **Mô tả & lý do chọn:** Chia nhỏ văn bản đệ quy kết hợp gom gộp tuần tự theo phân cấp Markdown. Giữ nguyên khối các điều khoản quy định theo ranh giới đoạn văn bản `\n\n`.
-- **Code snippet:**
-```python
-chunker = RecursiveChunker(chunk_size=400, separators=["\n\n", "\n", ". ", " "])
-chunks = chunker.chunk(document_body)
-results = store.search(query, top_k=3)
-```
+SentenceChunker tách theo dấu kết thúc câu và gom các câu thành nhóm tối đa 3 câu. Trên corpus team, chiến lược tạo 40 chunks: lần lượt 8, 7, 5, 7, 5 và 8 chunks; độ dài trung bình theo tài liệu lần lượt là 257.9, 270.4, 308.6, 210.9, 297.4 và 262.4 ký tự (trung bình toàn corpus khoảng 261.4 ký tự). Kết quả Gemini trên 5 query chính: Q1 top-2 có `01_course_registration` (0.9048), Q2 top-1 `02_tuition` (0.7665), Q3 top-1 `03_scholarship` (0.8186), Q4 top-1 `04_library` (0.7627), Q5 top-1 `06_assessment_and_grade_review` (0.8805). Như vậy cả 5 câu đều có chunk đúng trong top-3; Q1 cần đọc top-2 vì tài liệu học phí đứng top-1 do câu hỏi có cụm “hoàn học phí”.
 
-**Thành viên 3 — Hoàn**
-- **Loại chiến lược:** Chunker theo Heading (Markdown Heading Splitter)
-- **Mô tả & lý do chọn:** Chia nhỏ văn bản dựa trên các tiêu đề Markdown (`#`, `##`, `###`). Mỗi chunk tương ứng với một đề mục nội dung hoàn chỉnh của quy định học vụ (ví dụ: từng điều khoản lớn).
-- **Code snippet:**
-```python
-# Tách văn bản theo ranh giới các heading Markdown
-chunks = split_by_markdown_headers(document_body, headers_to_split_on=["#", "##"])
-results = store.search(query, top_k=3)
-```
+**Nguyễn Xuân Trường Giang — FixedSize + metadata filter**
 
-### So Sánh Giữa Các Thành Viên
+Dùng `chunk_size=350`, `overlap=50`, tạo tổng cộng 97 chunks. Ưu điểm là kích thước gần đồng đều và dễ dự đoán chi phí embedding. Nhược điểm là ranh giới ký tự có thể cắt giữa câu hoặc giữa điều khoản. Metadata filter giúp giảm phạm vi tìm kiếm; Query 1 có tài liệu đúng trong top-2 nhưng 4 query còn lại bị nhiễu.
 
-| Thành viên | Chiến lược (Strategy) | Điểm truy xuất (/10) | Điểm mạnh | Điểm yếu |
-|-----------|----------|----------------------|-----------|----------|
-| Nguyễn Xuân Trường Giang | FixedSizeChunker (350, 50) + Filter | 6 / 10 | Kích thước chunk đồng đều, overlap 50 ký tự giảm mất mát ngữ cảnh biên cắt. Kết hợp metadata filter giúp loại bỏ tài liệu sai đối tượng. | Cắt cứng theo số ký tự dễ làm đứt gãy câu hoặc điều khoản logic. |
-| Hải | Recursive + Baseline (400) | 8 / 10 | Tôn trọng ranh giới đoạn văn và câu; đạt kết quả Top-1 xuất sắc ở các câu 1, 4, 5. | Không có metadata filter nên một số truy vấn có thể bị lẫn đối tượng. |
-| Hoàn | Chunker theo Heading | 6 / 10 | Đảm bảo tính toàn vẹn 100% của một đề mục quy chế lớn, không bị ngắt quãng. | Độ dài chunk quá dài (trung bình ~1290 ký tự) làm loãng vector embedding. |
+**Đào Đức Hải — RecursiveChunker + metadata filter**
 
-**Chiến lược nào tốt nhất cho chủ đề này? Tại sao?**
-> `RecursiveChunker` của Hải là chiến lược tối ưu nhất cho văn bản quy chế học vụ vì nó phân cấp tự nhiên theo cấu trúc đoạn văn hành chính (`\n\n`), giữ trọn vẹn ngữ cảnh của từng điều khoản mà không bị quá dài như Heading Chunker hay quá cứng nhắc như FixedSizeChunker. Kết hợp thêm `Metadata Filtering` của Giang sẽ tạo thành pipeline hoàn hảo nhất.
+Dùng separators `['\n\n', '\n', '. ', ' ', '']` và `chunk_size=350`, tạo 43 chunks. Thuật toán ưu tiên tách theo đoạn, dòng và câu trước khi fallback xuống khoảng trắng/ký tự, nên bảo toàn ngữ cảnh hơn FixedSize. Kết quả đạt 3/5 câu có tài liệu liên quan trong top-3; Query 4 đúng top-1 và Query 5 có chunk đúng trong top-3.
+
+**Phan Trọng Hoàn — HeadingChunker + metadata filter**
+
+Tách văn bản theo heading Markdown, giữ heading trong mỗi chunk con; section vượt 500 ký tự được tách tiếp bằng RecursiveChunker. Chiến lược tạo 35 chunks, độ dài trung bình 313.5 ký tự và giữ được ngữ cảnh của từng điều khoản. Đây là chiến lược phù hợp nhất với corpus quy định vì heading thường biểu diễn cấu trúc nghiệp vụ trực tiếp.
+
+### So sánh kết quả retrieval
+
+| Thành viên | Chiến lược | Kết quả top-3 | Điểm mạnh | Điểm yếu |
+|---|---|---:|---|---|
+| Nguyễn Nhân Sâm | SentenceChunker | **5/5** | Ranh giới câu tự nhiên; 40 chunk, Gemini truy xuất đúng chủ đề | Q1 bị tài liệu học phí chen lên top-1 vì có cụm “hoàn học phí”; đúng tài liệu ở top-2 |
+| Nguyễn Xuân Trường Giang | FixedSize + filter | 1/5 | Đơn giản, kích thước đồng đều | 97 chunk vụn; dễ cắt hỏng điều khoản |
+| Đào Đức Hải | Recursive + filter | 3/5 | 43 chunk mạch lạc, tốt hơn FixedSize | MockEmbedder làm score nhiễu |
+| Phan Trọng Hoàn | Heading + filter + Gemini | **5/5** | 35 chunk, giữ heading/ngữ cảnh, đúng top-1 cả 5 | Section heading quá chung có thể tạo nhiều kết quả cùng tài liệu |
+
+**Chiến lược tốt nhất:** HeadingChunker của Phan Trọng Hoàn và SentenceChunker của Nguyễn Nhân Sâm cùng có 5/5 câu chứa tài liệu liên quan trong top-3; HeadingChunker có ưu thế hơn về vị trí top-1 (5/5), còn SentenceChunker có Q1 ở top-2 do từ khóa “hoàn học phí” kéo tài liệu học phí lên trước. Vì vậy nhóm chọn HeadingChunker làm chiến lược chính cho corpus quy định, SentenceChunker làm phương án đơn giản dễ tái tạo, và RecursiveChunker làm fallback khi tài liệu không có heading rõ. Kết luận này chỉ áp dụng cho corpus và bộ query hiện tại; cần chạy lại khi nguồn hoặc benchmark thay đổi.
+
+### Failure analysis
+
+- **FixedSize:** Query 2, 3, 4, 5 thường trả về sai top-1 vì cắt cứng theo ký tự làm mất ranh giới điều khoản; 97 chunks cũng làm tăng nhiễu.
+- **Recursive:** giảm số chunk và giữ ngữ cảnh tốt hơn, nhưng với MockEmbedder dựa trên MD5, vector không biểu diễn ngữ nghĩa nên Query 2, 3, 5 vẫn nhiễu.
+- **Heading:** vẫn có thể trả nhiều chunk cùng tài liệu nếu heading chung, nhưng trên bộ query này cả 5 câu đều có chunk đúng ở top-1.
+- **Metadata filter:** chỉ giới hạn tập tài liệu theo metadata, không thay thế embedding tốt. Filter cần dùng đúng giá trị đã khai báo (`student` hoặc `all`); không dùng giá trị chưa tồn tại như `undergraduate_student`.
 
 ---
 
 ## 3. Câu hỏi đánh giá & Chất lượng truy xuất (Retrieval Quality) — Nhóm (10 điểm)
 
-### Câu hỏi đánh giá & Câu trả lời chuẩn (nhóm thống nhất)
+### 5 benchmark queries và gold answers
 
-> **Đúng 5 câu hỏi**, đa dạng, có thể kiểm chứng; **câu 1 bắt buộc dùng lọc metadata `audience="student"`** để tránh lấy nhầm quy định của giảng viên (`library-faculty`).
+| # | Câu hỏi | Gold answer | Chunk chứa thông tin |
+|---|---|---|---|
+| 1 | Khi nào sinh viên được rút học phần và được hoàn học phí? | Được rút theo thủ tục của đơn vị đào tạo; rút trong **2 tuần đầu học kỳ chính** hoặc **1 tuần đầu học kỳ phụ** thì được xóa đăng ký và hoàn học phí. Rút sau hạn không được hoàn và có thể nhận F nếu không hoàn thành. | `01_course_registration`, mục “Rút bớt học phần”; đối chiếu `02_tuition` |
+| 2 | Học phí được tính dựa trên những yếu tố nào? | Dựa trên định mức học phí một tín chỉ, số tín chỉ học phần và hệ số tương ứng với học lần đầu, học lại, học cải thiện hoặc học tự chọn tự do. | `02_tuition`, mục “Nghĩa vụ học phí” |
+| 3 | Sinh viên chương trình tài năng hoặc chất lượng cao được ưu tiên những quyền lợi gì? | Được ưu tiên xét học bổng khuyến khích phát triển và học bổng tổ chức/cá nhân; nếu ở xa được ưu tiên bố trí KTX; có thể được ưu tiên dùng tài liệu, thiết bị, thư viện, Internet và tham gia chương trình học tập/hợp tác quốc tế. | `03_scholarship` |
+| 4 | Trung tâm Thư viện và Tri thức số hỗ trợ những dịch vụ nghiên cứu nào? | Hỗ trợ tra cứu theo chủ đề, DSpace-CRIS, DOIT, EndNote/Mendeley/Zotero, trắc lượng thư mục, số hóa tài liệu, quản lý/lưu trữ/chia sẻ dữ liệu nghiên cứu và hoạt động học thuật. | `04_library` |
+| 5 | Điểm kết thúc học phần chiếm tối thiểu bao nhiêu phần trăm điểm học phần? | Điểm đánh giá kết thúc học phần là bắt buộc và chiếm **không dưới 60%** tổng điểm học phần. | `06_assessment_and_grade_review`, mục “Thành phần điểm” |
 
-| # | Câu hỏi (Query) | Câu trả lời chuẩn (Gold Answer) | Chunk nào chứa thông tin? |
-|---|-------|-------------------------------|--------------------------|
-| 1 | Khi nào sinh viên được rút học phần và được hoàn học phí? *(Yêu cầu lọc audience="student")* | Việc rút bớt học phần chỉ được chấp nhận trong 2 tuần kể từ đầu học kỳ chính, 1 tuần kể từ đầu học kỳ phụ; sinh viên được hoàn trả học phí học phần rút bớt (Điều 23). | `01_course_registration` / Điều 23 |
-| 2 | Học phí được tính dựa trên những yếu tố nào? | Học phí tính theo công thức M = sum(a * hj * ni), phụ thuộc vào: định mức học phí một tín chỉ theo hình thức/chương trình (a), hệ số học phí theo lần học (hj: lần đầu, học lại, cải thiện, tự chọn tự do), và số tín chỉ của học phần (ni) (Điều 8). | `02_tuition` / Điều 8 |
-| 3 | Sinh viên chương trình tài năng hoặc chất lượng cao được ưu tiên những quyền lợi gì? | Được giáo sư đầu ngành giảng dạy & hướng dẫn NCKH; ưu tiên tài liệu, PTN, thư viện, internet; ưu tiên học bổng & KTX; ưu tiên xét chọn đi học nước ngoài / hợp tác quốc tế (Điều 36 khoản 4). | `03_scholarship` / Điều 36 |
-| 4 | Trung tâm Thư viện và Tri thức số hỗ trợ những dịch vụ nghiên cứu nào? | VNU-LIC hỗ trợ: Kiểm tra và Chống đạo văn (Turnitin); Trắc lượng thư mục (Bibliometrics) thống kê trích dẫn và hỗ trợ công bố quốc tế; Thư viện số nội sinh Repository tra cứu luận án, báo cáo khoa học; CSDL quốc tế (ScienceDirect, Springer); không gian nghiên cứu. | `04_library` / Mục 1, Mục 2 |
-| 5 | Điểm kết thúc học phần chiếm tối thiểu bao nhiêu phần trăm điểm học phần? | Điểm kết thúc học phần là bắt buộc và có trọng số không dưới 60% điểm của học phần (Điều 37 khoản 1). | `06_assessment_and_grade_review` / Điều 37 |
+### Tổng hợp kết quả của từng thành viên
 
-### Tổng hợp chất lượng truy xuất của nhóm
+| Thành viên | Q1 | Q2 | Q3 | Q4 | Q5 | Tổng top-3 |
+|---|---|---|---|---|---|---:|
+| Nguyễn Nhân Sâm — SentenceChunker | Q1: Top-2, 0.9048 | Q2: Top-1, 0.7665 | Q3: Top-1, 0.8186 | Q4: Top-1, 0.7627 | Q5: Top-1, 0.8805 | **5/5** |
+| Nguyễn Xuân Trường Giang — FixedSize | Top-2, đúng | Sai top-3 | Sai top-3 | Sai top-3 | Sai top-3 | **1/5** |
+| Đào Đức Hải — Recursive | Top-2, đúng | Sai top-3 | Sai top-3 | Top-1, đúng | Top-3, đúng | **3/5** |
+| Phan Trọng Hoàn — Heading + Gemini | Top-1, 0.9181 | Top-1, 0.7716 | Top-1, 0.8666 | Top-1, 0.8338 | Top-1, 0.8489 | **5/5** |
 
-> Cách chấm (theo `docs/SCORING.md`): **2 điểm/câu** — top-3 chứa chunk liên quan + agent trả lời đúng (2), có liên quan nhưng thiếu/không ở top-1 (1), không có trong top-3 (0).
+### Metadata filtering
 
-| # | Câu hỏi | Chiến lược tốt nhất cho câu này | Có chunk liên quan trong top-3? | Ghi chú |
-|---|---------|-------------------------------|-------------------------------|---------|
-| 1 | Khi nào sinh viên được rút học phần và được hoàn học phí? *(Filter)* | RecursiveChunker (Top-1, Score 0.4357) | Cả 3 thành viên đều có trong Top-3 (Nam Top-1, Giang Top-2, Tuấn Top-3) | Bắt buộc phải có `metadata_filter={"audience": "student"}` để khu biệt đúng quyền lợi sinh viên. |
-| 2 | Học phí được tính dựa trên những yếu tố nào? | Semantic Dense Embeddings / MiniLM | Khớp tài liệu chuẩn Điều 8 `02_tuition` | Cần embedding ngữ nghĩa để phân biệt rõ biến số tính học phí. |
-| 3 | Sinh viên chương trình tài năng hoặc CLC được ưu tiên những quyền lợi gì? | RecursiveChunker (Score 0.2229) | Có trong Top-3 (Nam Top-3) | Tách đúng Điều 36 khoản 4 về quyền lợi sinh viên tài năng. |
-| 4 | Trung tâm Thư viện và Tri thức số hỗ trợ những dịch vụ nghiên cứu nào? | RecursiveChunker & SentenceChunker | Có (Nam Top-1 Score 0.2848, Tuấn Top-3) | RecursiveChunker cô lập trọn vẹn danh mục dịch vụ số VNU-LIC. |
-| 5 | Điểm kết thúc học phần chiếm tối thiểu bao nhiêu phần trăm điểm học phần? | RecursiveChunker (Top-1, Score 0.4251) | Có (Nam Top-1, Tuấn Top-2/Top-3) | RecursiveChunker gom trọn vẹn Điều 37 quy định trọng số không dưới 60%. |
-
-**Lọc bằng metadata có giúp ích không? Ở câu hỏi nào?**
-> **Rất hữu ích và mang tính quyết định**, thể hiện rõ rệt nhất ở **Câu hỏi 1** ("Sinh viên ĐHQGHN rút bớt học phần đã đăng ký trong thời hạn nào để được hoàn trả lại học phí?"). Nếu không có bộ lọc `metadata_filter={"audience": "student"}`, hệ thống sẽ truy xuất lẫn lộn các tài liệu chung hoặc tài liệu quản lý đơn vị, khiến câu trả lời không tập trung vào đúng quy chế của người học. Nhờ áp dụng Pre-filtering, 100% các ứng viên không phù hợp bị loại bỏ ngay từ đầu, đảm bảo tính chính xác và an toàn tuyệt đối cho câu trả lời.
+Metadata filter có ích nhất khi câu hỏi được giới hạn theo đối tượng, đặc biệt là `audience=student`. Nó loại các tài liệu không phù hợp trước khi xếp hạng, nhưng không thể sửa lỗi do chunking kém hoặc embedding không có tính ngữ nghĩa. Kết quả của Giang và Hải cho thấy filter hỗ trợ Q1, nhưng kết quả tốt nhất vẫn cần kết hợp metadata với chunk có ranh giới ngữ nghĩa và embedding phù hợp. Trong thí nghiệm của Hoàn, filter được áp dụng trước similarity search và cả 5 câu đều có chunk đúng ở top-1.
 
 ---
 
 ## 4. Thuyết trình (Demo) & Bài học nhóm — Nhóm (5 điểm)
 
-**Những phân tích (insights) hay nhất nhóm sẽ trình bày:**
-> 1. **Hiệu ứng ranh giới (Boundary Effect) của Fixed-size vs Semantic Boundary:** Cắt theo ký tự cố định có thể làm đứt gãy câu, trong khi cắt theo câu và tiêu đề Markdown giúp chunk giữ trọn vẹn ngữ nghĩa độc lập.
-> 2. **Pre-filtering vs Post-filtering:** Pre-filtering là bắt buộc trong hệ thống RAG thực tế khi corpus có nhiều đối tượng bạn đọc khác nhau (`audience`) trên cùng một chủ đề (như thư viện). Post-filtering có thể làm rỗng kết quả nếu Top-K ban đầu bị chiếm lĩnh bởi tài liệu không phù hợp.
-> 3. **Bản chất của Vector Embeddings:** Thử nghiệm chứng minh MockEmbedder (băm chuỗi MD5) chỉ cho giá trị ngẫu nhiên và không phản ánh ngữ nghĩa; để đưa vào sản phẩm thực tế cần các mô hình Dense Embeddings đa ngôn ngữ (như `paraphrase-multilingual-MiniLM-L12-v2` hoặc OpenAI/Gemini Embeddings).
+### Kịch bản demo đề xuất
 
-**Bài học rút ra khi so sánh trong nhóm:**
-> Cùng một bộ dữ liệu nhưng sự lựa chọn về kích thước chunk (`chunk_size`), độ chồng lấn (`overlap`) và đơn vị tách (ký tự, câu hay đoạn) tạo ra sự khác biệt rất lớn về khả năng trúng đích của Top-3 retrieval. Không có một kích thước chunk nào là "hoàn hảo cho mọi trường hợp", mà chiến lược chia nhỏ phải đồng điệu với cấu trúc tự nhiên của văn bản nguồn.
+1. Giới thiệu corpus 6 tài liệu, metadata schema và một giới hạn dữ liệu.
+2. Chạy cùng 5 queries với FixedSize, Recursive và HeadingChunker.
+3. So sánh số chunk: 97 → 43 → 35 và chỉ ra ví dụ ranh giới điều khoản.
+4. Demo metadata filter `audience=student`.
+5. Trình bày vì sao HeadingChunker đạt 5/5, nhưng không khẳng định chiến lược luôn tốt cho mọi corpus.
 
-**Nếu làm lại, nhóm sẽ thay đổi gì trong chiến lược dữ liệu (data strategy)?**
-> Nhóm sẽ áp dụng chiến lược **Heading-Aware Chunking** (khi chia nhỏ bất kỳ section dài nào, luôn tự động gắn tiêu đề mục cha `## Heading` vào đầu mỗi chunk con). Điều này giúp các chunk nằm ở nửa sau của một điều khoản dài vẫn luôn giữ được ngữ cảnh "đang nói về quy định gì", từ đó nâng cao vượt bậc điểm tương đồng ngữ nghĩa khi truy vấn.
+### Insights chính
+
+- Chunk ít hơn không tự động tốt hơn; quan trọng là chunk có giữ trọn điều khoản trả lời hay không.
+- Chunking theo heading phù hợp với văn bản quy chế vì heading mang thông tin cấu trúc và giảm việc cắt giữa câu.
+- Metadata filter cải thiện phạm vi tìm kiếm nhưng không thay thế embedding có tính ngữ nghĩa. MockEmbedder hữu ích cho unit test nhưng không nên dùng để kết luận chất lượng semantic retrieval cuối cùng.
+
+### Bài học và hướng cải thiện
+
+Nếu làm lại, nhóm sẽ dùng HeadingChunker làm chiến lược chính, RecursiveChunker làm fallback, đồng thời chuẩn hóa metadata và chạy benchmark bằng cùng một embedding backend. Nhóm cũng sẽ bổ sung tài liệu chính thức chi tiết hơn cho mức học phí, quy trình KTX và phúc khảo để các câu trả lời không phải dừng ở “dữ liệu chưa đủ”.
+
+### Phân công demo
+
+- Nguyễn Nhân Sâm: giới thiệu bài toán, SentenceChunker và pipeline RAG.
+- Nguyễn Xuân Trường Giang: FixedSize, overlap và failure case.
+- Đào Đức Hải: RecursiveChunker và so sánh số lượng chunk.
+- Phan Trọng Hoàn: HeadingChunker, Gemini benchmark và kết luận.
 
 ---
 
-## Tự Đánh Giá (Phần Nhóm)
+## Tự đánh giá (Phần nhóm)
 
 | Tiêu chí | Điểm tự đánh giá |
-|----------|-------------------|
-| Lựa chọn tài liệu (Document Set Quality) | 10 / 10 |
-| Thiết kế chiến lược (Strategy Design) | 15 / 15 |
-| Chất lượng truy xuất (Retrieval Quality) | 10 / 10 |
-| Thuyết trình (Demo) | 5 / 5 |
+|---|---:|
+| Lựa chọn tài liệu | 10 / 10 |
+| Thiết kế chiến lược | 15 / 15 |
+| Chất lượng truy xuất | 10 / 10 |
+| Thuyết trình | 5 / 5 |
 | **Tổng phần nhóm** | **40 / 40** |
 
+> Trước khi nộp: mỗi thành viên cần copy bản `REPORT_NHOM.md` và `data/vnu-rag-data/` vào fork cá nhân; R1 kiểm tra manifest, R2 kiểm tra 5 query/gold answer, R3 kiểm tra các chiến lược không trùng. Điểm tự đánh giá là đề xuất của nhóm, giảng viên quyết định điểm cuối cùng.
