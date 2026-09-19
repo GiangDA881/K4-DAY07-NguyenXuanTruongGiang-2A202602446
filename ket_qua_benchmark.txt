@@ -5,84 +5,84 @@ Chiến lược: FixedSizeChunker (chunk_size=350, overlap=50) + Metadata Filter
 Tổng số tài liệu: 6 | Tổng số chunks: 97
 
 ======================================================================
-Câu hỏi 1: Sinh viên ĐHQGHN rút bớt học phần đã đăng ký trong thời hạn nào để được hoàn trả lại học phí?
+Câu hỏi 1: Khi nào sinh viên được rút học phần và được hoàn học phí?
 Bộ lọc metadata: {'audience': 'student'}
 Đáp án chuẩn (Gold Answer): Theo Điều 23 Quy chế đào tạo ĐHQGHN, việc rút bớt học phần chỉ được chấp nhận trong 2 tuần kể từ đầu học kỳ chính (hoặc 1 tuần kể từ đầu học kỳ phụ) và được trả lại học phí.
 Tài liệu chuẩn (Gold Doc): 01_course_registration
 
 Top-3 Chunks truy xuất được:
-  1. [Score: 0.277] id=01_course_registration#6 | doc_id=01_course_registration (*) [GOLD MATCH]
-     Nội dung: ết thúc việc chấm thi;  c) Tất cả các đơn vị đào tạo trong toàn Đại học Quốc gia Hà Nội sử dụng  th...
-  2. [Score: 0.267] id=06_assessment_and_grade_review#21 | doc_id=06_assessment_and_grade_review 
-     Nội dung: ố điểm học phần được hoàn thành chậm nhất là 15 ngày làm việc kể từ ngày tổ chức thi kết thúc học ph...
-  3. [Score: 0.230] id=03_scholarship#5 | doc_id=03_scholarship 
-     Nội dung:   Các đối tượng ở điểm a, b,c khoản 3, Điều này thời gian nghỉ học tạm thời  không tính vào thời gi...
+  1. [Score: 0.321] id=06_assessment_and_grade_review#0 | doc_id=06_assessment_and_grade_review 
+     Nội dung: # Kiểm tra thi công bố điểm và giới hạn thông tin phúc khảo tại ĐHQGHN  Trích Quy chế đào tạo đại họ...
+  2. [Score: 0.220] id=01_course_registration#20 | doc_id=01_course_registration (*) [GOLD MATCH]
+     Nội dung: ̉n 1, Điều 21 của Quy chế này.  Sinh viên chỉ được phép không lên lớp đối với học phần xin rút bớt...
+  3. [Score: 0.204] id=02_tuition#4 | doc_id=02_tuition 
+     Nội dung:   ni: Số tín chỉ của học phần thứ i   k: Tổng số học phần  - Thủ trưởng đơn vị đào tạo xây dựng...
 -> ĐÁNH GIÁ: THÀNH CÔNG (Tài liệu chuẩn nằm trong Top-3)
-Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\vnu-rag-data\04_library.md)...).
-
-======================================================================
-Câu hỏi 2: Khối lượng học tập tối thiểu và tối đa mà sinh viên ĐHQGHN phải đăng ký trong mỗi học kỳ chính là bao nhiêu?
-Bộ lọc metadata: None
-Đáp án chuẩn (Gold Answer): Theo Điều 21 Quy chế đào tạo ĐHQGHN, khối lượng đăng ký tối thiểu không ít hơn 2/3 và tối đa không vượt quá 3/2 khối lượng trung bình một học kỳ theo kế hoạch học tập chuẩn (không tính học kỳ cuối khóa).
-Tài liệu chuẩn (Gold Doc): 01_course_registration
-
-Top-3 Chunks truy xuất được:
-  1. [Score: 0.336] id=06_assessment_and_grade_review#4 | doc_id=06_assessment_and_grade_review 
-     Nội dung:  có thể thực hiện bằng hình thức thi tự luận, trắc  nghiệm, vấn đáp, làm bài tập lớn hoặc kết hợp cá...
-  2. [Score: 0.330] id=02_tuition#18 | doc_id=02_tuition 
-     Nội dung: ị đào tạo đối với chương trình đào tạo này;  - Thường xuyên phản ánh tình hình học tập, nghiên cứu,...
-  3. [Score: 0.315] id=05_dormitory#5 | doc_id=05_dormitory 
-     Nội dung:  giường tầng, bàn ghế tự học, tủ đồ cá nhân, bình nước nóng, điều hòa nhiệt độ, mạng Internet wifi t...
--> ĐÁNH GIÁ: THẤT BẠI (Tài liệu chuẩn không nằm trong Top-3)
 Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\vnu-rag-data\06_assessment_and_grade_review.md)...).
 
 ======================================================================
-Câu hỏi 3: Nghĩa vụ đóng học phí của sinh viên ĐHQGHN và điều kiện dự thi kết thúc học phần liên quan đến học phí là gì?
+Câu hỏi 2: Học phí được tính dựa trên những yếu tố nào?
 Bộ lọc metadata: None
-Đáp án chuẩn (Gold Answer): Theo Quy chế đào tạo ĐHQGHN, sinh viên có nghĩa vụ nộp học phí đầy đủ đúng hạn; sinh viên chỉ được dự thi kết thúc học phần nếu có điểm đánh giá bộ phận lớn hơn 0 và đã trả học phí đầy đủ.
+Đáp án chuẩn (Gold Answer): Theo Điều 8 Quy chế đào tạo ĐHQGHN, học phí được tính theo công thức M = sum(a * hj * ni), phụ thuộc vào: định mức học phí một tín chỉ theo hình thức/chương trình đào tạo (a), hệ số học phí theo lần học (hj), và số tín chỉ của học phần (ni).
 Tài liệu chuẩn (Gold Doc): 02_tuition
 
 Top-3 Chunks truy xuất được:
-  1. [Score: 0.324] id=01_course_registration#3 | doc_id=01_course_registration 
-     Nội dung: Đăng ký học phần  a) Việc tổ chức đăng ký học các học phần trong chương trình đào tạo do thủ  ...
-  2. [Score: 0.258] id=06_assessment_and_grade_review#4 | doc_id=06_assessment_and_grade_review 
-     Nội dung:  có thể thực hiện bằng hình thức thi tự luận, trắc  nghiệm, vấn đáp, làm bài tập lớn hoặc kết hợp cá...
-  3. [Score: 0.244] id=06_assessment_and_grade_review#2 | doc_id=06_assessment_and_grade_review 
-     Nội dung: oạt động của giảng viên sử dụng các  kỹ thuật đánh giá khác nhau trong các hình thức dạy học nhằm ...
+  1. [Score: 0.255] id=01_course_registration#6 | doc_id=01_course_registration 
+     Nội dung: ết thúc việc chấm thi;  c) Tất cả các đơn vị đào tạo trong toàn Đại học Quốc gia Hà Nội sử dụng  th...
+  2. [Score: 0.237] id=03_scholarship#9 | doc_id=03_scholarship 
+     Nội dung: oa học của sinh viên đạt  giải được cộng vào điểm trung bình chung học kỳ, điểm trung bình chung t...
+  3. [Score: 0.237] id=01_course_registration#11 | doc_id=01_course_registration 
+     Nội dung: à học phần tự chọn có điều kiện) để cải  thiện điểm trung bình chung tích lũy. Điểm học phần cũ b...
 -> ĐÁNH GIÁ: THẤT BẠI (Tài liệu chuẩn không nằm trong Top-3)
 Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\vnu-rag-data\01_course_registration.md)...).
 
 ======================================================================
-Câu hỏi 4: Sinh viên chương trình tài năng, chất lượng cao tại ĐHQGHN được quy đổi điểm học phần nâng cao để xét học bổng như thế nào?
+Câu hỏi 3: Sinh viên chương trình tài năng hoặc chất lượng cao được ưu tiên những quyền lợi gì?
 Bộ lọc metadata: None
-Đáp án chuẩn (Gold Answer): Theo Điều 38 khoản 9, điểm các học phần nâng cao, bổ sung được quy đổi làm căn cứ xét học bổng theo công thức: các điểm từ 4 đến 9 được tăng lên 1 điểm; các điểm 0, 1, 2, 3 và 10 giữ nguyên.
+Đáp án chuẩn (Gold Answer): Theo Điều 36 khoản 4 Quy chế đào tạo ĐHQGHN, sinh viên tài năng/CLC được: giáo sư đầu ngành trực tiếp giảng dạy; ưu tiên tài liệu, thiết bị kỹ thuật, thư viện, internet; ưu tiên học bổng & KTX; ưu tiên xét chọn đi học nước ngoài.
 Tài liệu chuẩn (Gold Doc): 03_scholarship
 
 Top-3 Chunks truy xuất được:
-  1. [Score: 0.278] id=02_tuition#16 | doc_id=02_tuition 
-     Nội dung: sẽ bị điểm không (0) bài thi học phần đó và  phải ra khỏi phòng thi ngay sau khi có quyết định đìn...
-  2. [Score: 0.272] id=03_scholarship#2 | doc_id=03_scholarship (*) [GOLD MATCH]
-     Nội dung: sách  nhà nước trong thời gian theo học.  3. Sinh viên được xin nghỉ học tạm thời và bảo lưu kết qu...
-  3. [Score: 0.225] id=06_assessment_and_grade_review#18 | doc_id=06_assessment_and_grade_review 
-     Nội dung: iểm các học phần nâng cao, bổ sung được quy đổi để ghi vào phụ lục văn  bằng và xếp loại học tập ...
--> ĐÁNH GIÁ: THÀNH CÔNG (Tài liệu chuẩn nằm trong Top-3)
-Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\vnu-rag-data\02_tuition.md)...).
+  1. [Score: 0.216] id=01_course_registration#11 | doc_id=01_course_registration 
+     Nội dung: à học phần tự chọn có điều kiện) để cải  thiện điểm trung bình chung tích lũy. Điểm học phần cũ b...
+  2. [Score: 0.185] id=06_assessment_and_grade_review#21 | doc_id=06_assessment_and_grade_review 
+     Nội dung: ố điểm học phần được hoàn thành chậm nhất là 15 ngày làm việc kể từ ngày tổ chức thi kết thúc học ph...
+  3. [Score: 0.184] id=06_assessment_and_grade_review#22 | doc_id=06_assessment_and_grade_review 
+     Nội dung: m gửi về Phòng Đào tạo trong thời hạn quy định của đơn vị đào tạo (thường trong vòng 10 đến 15 ngày ...
+-> ĐÁNH GIÁ: THẤT BẠI (Tài liệu chuẩn không nằm trong Top-3)
+Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\vnu-rag-data\01_course_registration.md)...).
 
 ======================================================================
-Câu hỏi 5: Thời hạn chấm thi và công bố điểm thi kết thúc học phần tại ĐHQGHN được quy định hoàn thành trong bao nhiêu ngày?
+Câu hỏi 4: Trung tâm Thư viện và Tri thức số hỗ trợ những dịch vụ nghiên cứu nào?
 Bộ lọc metadata: None
-Đáp án chuẩn (Gold Answer): Theo Điều 38 khoản 6 Quy chế đào tạo ĐHQGHN, việc chấm thi và công bố điểm học phần được hoàn thành chậm nhất là 15 ngày làm việc kể từ ngày tổ chức thi kết thúc học phần; đề thi và bài thi lưu trữ ít nhất 2 năm.
-Tài liệu chuẩn (Gold Doc): 06_assessment_and_grade_review
+Đáp án chuẩn (Gold Answer): VNU-LIC hỗ trợ: Dịch vụ Kiểm tra và Chống đạo văn (Turnitin), Dịch vụ Trắc lượng thư mục (Bibliometrics) thống kê trích dẫn và hỗ trợ công bố quốc tế, Thư viện số nội sinh Repository, và CSDL quốc tế ScienceDirect, Springer.
+Tài liệu chuẩn (Gold Doc): 04_library
 
 Top-3 Chunks truy xuất được:
-  1. [Score: 0.247] id=06_assessment_and_grade_review#7 | doc_id=06_assessment_and_grade_review (*) [GOLD MATCH]
-     Nội dung: thi kết thúc học phần và công bố điểm (Điều 38)  Điều 38. Tổ chức kiểm tra đánh giá và thi kết thu...
-  2. [Score: 0.230] id=02_tuition#20 | doc_id=02_tuition 
-     Nội dung: Điều 23 khoản 2: - Việc rút bớt học phần chỉ được chấp nhận trong 2 tuần kể từ đầu học kỳ chính, 1 t...
-  3. [Score: 0.219] id=02_tuition#17 | doc_id=02_tuition 
-     Nội dung: ăm nếu vi phạm lần thứ nhất và buộc thôi học nếu vi phạm lần thứ hai.  Ngoài những nghĩa vụ chung ...
--> ĐÁNH GIÁ: THÀNH CÔNG (Tài liệu chuẩn nằm trong Top-3)
+  1. [Score: 0.284] id=06_assessment_and_grade_review#6 | doc_id=06_assessment_and_grade_review 
+     Nội dung: ọc ph ần. Đáp án và thang điểm chấm điểm bộ phận, chấm  bài thi kết thúc học phần phải được biên ...
+  2. [Score: 0.254] id=05_dormitory#4 | doc_id=05_dormitory 
+     Nội dung: i ngang ven biển và hải đảo. - Sinh viên đoạt giải trong các kỳ thi học sinh giỏi quốc tế, quốc gia ...
+  3. [Score: 0.253] id=02_tuition#10 | doc_id=02_tuition 
+     Nội dung: , chứng chỉ giả;  vi phạm kỷ luật phòng thi, xin điểm; học, thi, thực tập hộ người khác hoặc nhờ  n...
+-> ĐÁNH GIÁ: THẤT BẠI (Tài liệu chuẩn không nằm trong Top-3)
 Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\vnu-rag-data\06_assessment_and_grade_review.md)...).
 
 ======================================================================
-TỔNG KẾT: 3/5 câu hỏi có chunk liên quan trong Top-3
+Câu hỏi 5: Điểm kết thúc học phần chiếm tối thiểu bao nhiêu phần trăm điểm học phần?
+Bộ lọc metadata: None
+Đáp án chuẩn (Gold Answer): Theo Điều 37 khoản 1 Quy chế đào tạo ĐHQGHN, điểm kết thúc học phần là bắt buộc và có trọng số không dưới 60% điểm của học phần.
+Tài liệu chuẩn (Gold Doc): 06_assessment_and_grade_review
+
+Top-3 Chunks truy xuất được:
+  1. [Score: 0.303] id=01_course_registration#16 | doc_id=01_course_registration 
+     Nội dung: ̀n thay thế do thủ trưởng đơn vị đào tạo quy định. Các học  phần thay thế cho khóa luận, đồ án tốt...
+  2. [Score: 0.291] id=04_library#6 | doc_id=04_library 
+     Nội dung: g cấp hồ sơ nhà khoa học, thống kê chỉ số trích dẫn, xếp hạng nghiên cứu và hỗ trợ công bố quốc tế. ...
+  3. [Score: 0.279] id=01_course_registration#10 | doc_id=01_course_registration 
+     Nội dung: có điều kiện, nếu bị điểm F, sinh viên đăng ký  học lại học phần đó hoặc đăng ký học học phần tự...
+-> ĐÁNH GIÁ: THẤT BẠI (Tài liệu chuẩn không nằm trong Top-3)
+Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\vnu-rag-data\01_course_registration.md)...).
+
+======================================================================
+TỔNG KẾT: 1/5 câu hỏi có chunk liên quan trong Top-3

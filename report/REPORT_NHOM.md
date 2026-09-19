@@ -123,11 +123,11 @@ results = store.search_with_filter(query, top_k=3, metadata_filter={"audience": 
 
 | # | Câu hỏi (Query) | Câu trả lời chuẩn (Gold Answer) | Chunk nào chứa thông tin? |
 |---|-------|-------------------------------|--------------------------|
-| 1 | Sinh viên ĐHQGHN rút bớt học phần đã đăng ký trong thời hạn nào để được hoàn trả lại học phí? *(Yêu cầu lọc audience="student")* | Việc rút bớt học phần chỉ được chấp nhận trong 2 tuần kể từ đầu học kỳ chính, 1 tuần kể từ đầu học kỳ phụ; sinh viên được hoàn trả học phí học phần rút bớt (Điều 23). | `01_course_registration#6` / Điều 23 |
-| 2 | Khối lượng học tập tối thiểu và tối đa mà sinh viên ĐHQGHN phải đăng ký trong mỗi học kỳ chính là bao nhiêu? | Tối thiểu không ít hơn 2/3 và tối đa không quá 3/2 khối lượng trung bình một học kỳ theo kế hoạch học tập chuẩn (Điều 21). | `01_course_registration#0` / Điều 21 |
-| 3 | Nghĩa vụ đóng học phí của sinh viên ĐHQGHN và điều kiện dự thi kết thúc học phần liên quan đến học phí là gì? | Sinh viên có trách nhiệm đóng học phí theo quy định của ĐHQGHN; sinh viên chưa hoàn thành nghĩa vụ học phí sẽ không được dự thi kết thúc học phần (Điều 58, Điều 60). | `02_tuition#0`, `#17` / Điều 58, 60 |
-| 4 | Sinh viên chương trình tài năng, chất lượng cao tại ĐHQGHN được quy đổi điểm học phần nâng cao để xét học bổng như thế nào? | Điểm từ 4 đến 9 được cộng thêm 1 điểm khi tính điểm xét học bổng; điểm 0, 1, 2, 3 và 10 giữ nguyên (Điều 38). | `03_scholarship#2` / Điều 38 |
-| 5 | Thời hạn chấm thi và công bố điểm thi kết thúc học phần tại ĐHQGHN được quy định hoàn thành trong bao nhiêu ngày? | Thời gian chấm thi và công bố điểm thi chậm nhất là 15 ngày làm việc kể từ ngày thi cuối cùng của học phần (Điều 38 khoản 6). | `06_assessment_and_grade_review#7` / Điều 38 |
+| 1 | Khi nào sinh viên được rút học phần và được hoàn học phí? *(Yêu cầu lọc audience="student")* | Việc rút bớt học phần chỉ được chấp nhận trong 2 tuần kể từ đầu học kỳ chính, 1 tuần kể từ đầu học kỳ phụ; sinh viên được hoàn trả học phí học phần rút bớt (Điều 23). | `01_course_registration` / Điều 23 |
+| 2 | Học phí được tính dựa trên những yếu tố nào? | Học phí tính theo công thức M = sum(a * hj * ni), phụ thuộc vào: định mức học phí một tín chỉ theo hình thức/chương trình (a), hệ số học phí theo lần học (hj: lần đầu, học lại, cải thiện, tự chọn tự do), và số tín chỉ của học phần (ni) (Điều 8). | `02_tuition` / Điều 8 |
+| 3 | Sinh viên chương trình tài năng hoặc chất lượng cao được ưu tiên những quyền lợi gì? | Được giáo sư đầu ngành giảng dạy & hướng dẫn NCKH; ưu tiên tài liệu, PTN, thư viện, internet; ưu tiên học bổng & KTX; ưu tiên xét chọn đi học nước ngoài / hợp tác quốc tế (Điều 36 khoản 4). | `03_scholarship` / Điều 36 |
+| 4 | Trung tâm Thư viện và Tri thức số hỗ trợ những dịch vụ nghiên cứu nào? | VNU-LIC hỗ trợ: Kiểm tra và Chống đạo văn (Turnitin); Trắc lượng thư mục (Bibliometrics) thống kê trích dẫn và hỗ trợ công bố quốc tế; Thư viện số nội sinh Repository tra cứu luận án, báo cáo khoa học; CSDL quốc tế (ScienceDirect, Springer); không gian nghiên cứu. | `04_library` / Mục 1, Mục 2 |
+| 5 | Điểm kết thúc học phần chiếm tối thiểu bao nhiêu phần trăm điểm học phần? | Điểm kết thúc học phần là bắt buộc và có trọng số không dưới 60% điểm của học phần (Điều 37 khoản 1). | `06_assessment_and_grade_review` / Điều 37 |
 
 ### Tổng hợp chất lượng truy xuất của nhóm
 
@@ -135,11 +135,11 @@ results = store.search_with_filter(query, top_k=3, metadata_filter={"audience": 
 
 | # | Câu hỏi | Chiến lược tốt nhất cho câu này | Có chunk liên quan trong top-3? | Ghi chú |
 |---|---------|-------------------------------|-------------------------------|---------|
-| 1 | Thời hạn rút bớt học phần hoàn phí | FixedSize & Sentence (+Filter) | Có (Top-1) | Bắt buộc phải có `metadata_filter={"audience": "student"}` để khu biệt đúng quyền lợi sinh viên. |
-| 2 | Khối lượng tín chỉ tối thiểu/tối đa | RecursiveChunker | Có (Top-1) | RecursiveChunker tách trọn vẹn khối Điều 21 Quy chế 3626. |
-| 3 | Nghĩa vụ học phí & cấm thi | SentenceChunker | Có (Top-1) | SentenceChunker cô lập chính xác câu quy định chế tài cấm thi do nợ học phí. |
-| 4 | Quy đổi điểm học bổng tài năng | FixedSizeChunker | Có (Top-2) | Nằm trong Top-2 với score 0.272. |
-| 5 | Thời hạn chấm & công bố điểm | FixedSize & Recursive | Có (Top-1) | Khớp chính xác Top-1 với điểm số cao nhất (score 0.247). |
+| 1 | Khi nào sinh viên được rút học phần và được hoàn học phí? *(Filter)* | RecursiveChunker (Top-1, Score 0.4357) | Cả 3 thành viên đều có trong Top-3 (Nam Top-1, Giang Top-2, Tuấn Top-3) | Bắt buộc phải có `metadata_filter={"audience": "student"}` để khu biệt đúng quyền lợi sinh viên. |
+| 2 | Học phí được tính dựa trên những yếu tố nào? | Semantic Dense Embeddings / MiniLM | Khớp tài liệu chuẩn Điều 8 `02_tuition` | Cần embedding ngữ nghĩa để phân biệt rõ biến số tính học phí. |
+| 3 | Sinh viên chương trình tài năng hoặc CLC được ưu tiên những quyền lợi gì? | RecursiveChunker (Score 0.2229) | Có trong Top-3 (Nam Top-3) | Tách đúng Điều 36 khoản 4 về quyền lợi sinh viên tài năng. |
+| 4 | Trung tâm Thư viện và Tri thức số hỗ trợ những dịch vụ nghiên cứu nào? | RecursiveChunker & SentenceChunker | Có (Nam Top-1 Score 0.2848, Tuấn Top-3) | RecursiveChunker cô lập trọn vẹn danh mục dịch vụ số VNU-LIC. |
+| 5 | Điểm kết thúc học phần chiếm tối thiểu bao nhiêu phần trăm điểm học phần? | RecursiveChunker (Top-1, Score 0.4251) | Có (Nam Top-1, Tuấn Top-2/Top-3) | RecursiveChunker gom trọn vẹn Điều 37 quy định trọng số không dưới 60%. |
 
 **Lọc bằng metadata có giúp ích không? Ở câu hỏi nào?**
 > **Rất hữu ích và mang tính quyết định**, thể hiện rõ rệt nhất ở **Câu hỏi 1** ("Sinh viên ĐHQGHN rút bớt học phần đã đăng ký trong thời hạn nào để được hoàn trả lại học phí?"). Nếu không có bộ lọc `metadata_filter={"audience": "student"}`, hệ thống sẽ truy xuất lẫn lộn các tài liệu chung hoặc tài liệu quản lý đơn vị, khiến câu trả lời không tập trung vào đúng quy chế của người học. Nhờ áp dụng Pre-filtering, 100% các ứng viên không phù hợp bị loại bỏ ngay từ đầu, đảm bảo tính chính xác và an toàn tuyệt đối cho câu trả lời.
