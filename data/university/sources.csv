@@ -1,0 +1,7 @@
+doc_id,file_path,title,source_url,retrieved_at,document_version,license_or_permission
+course-registration,data/university/course-registration.md,Quy chế đăng ký học phần và rút môn học,https://vinuni.edu.vn/academic-regulations/course-registration,2026-09-18,2026.1,public-source
+library-services,data/university/library-services.md,Quy định mượn trả tài liệu thư viện cho sinh viên,https://vinuni.edu.vn/library/regulations-student,2026-09-18,2026.1,public-source
+library-faculty,data/university/library-faculty.md,Quy định mượn trả tài liệu thư viện cho giảng viên và nghiên cứu viên,https://vinuni.edu.vn/library/regulations-faculty,2026-09-18,2026.1,public-source
+tuition-payment,data/university/tuition-payment.md,Quy định về nộp học phí và chính sách gia hạn thanh toán,https://vinuni.edu.vn/finance/tuition-payment-policy,2026-09-18,2026.1,public-source
+scholarship-policy,data/university/scholarship-policy.md,Chính sách học bổng khuyến khích học tập và tài năng,https://vinuni.edu.vn/scholarships/merit-based,2026-09-18,2026.1,public-source
+exam-regrade,data/university/exam-regrade.md,Quy chế phúc khảo bài thi kết thúc học phần,https://vinuni.edu.vn/examinations/regrade-appeal,2026-09-18,2026.1,public-source

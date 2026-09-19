@@ -1,0 +1,88 @@
+=== KẾT QUẢ BENCHMARK TRUY XUẤT (K4-L3A) ===
+Sinh viên: Nguyễn Xuân Trường Giang - MSSV: 2A202602446
+Chủ đề: Dịch vụ & Quy định Đại học (Corpus: university)
+Chiến lược: FixedSizeChunker (chunk_size=350, overlap=50) + Metadata Filter
+Tổng số tài liệu: 6 | Tổng số chunks: 26
+
+======================================================================
+Câu hỏi 1: Thời hạn mượn sách thư viện tối đa bao nhiêu ngày và được gia hạn mấy lần?
+Bộ lọc metadata: {'audience': 'student'}
+Đáp án chuẩn (Gold Answer): Thời hạn mượn sách tiêu chuẩn cho sinh viên là 14 ngày, được gia hạn trực tuyến tối đa 2 lần (mỗi lần thêm 7 ngày).
+Tài liệu chuẩn (Gold Doc): library-services
+
+Top-3 Chunks truy xuất được:
+  1. [Score: 0.305] id=exam-regrade#2 | doc_id=exam-regrade 
+     Nội dung: ường hợp sau khi phúc khảo điểm thi được điều chỉnh tăng lên từ 0.5 điểm trở lên (theo thang điểm 10...
+  2. [Score: 0.302] id=scholarship-policy#0 | doc_id=scholarship-policy 
+     Nội dung: # Chính sách học bổng khuyến khích học tập và tài năng  ## 1. Tiêu chuẩn xét học bổng khuyến khích h...
+  3. [Score: 0.216] id=scholarship-policy#2 | doc_id=scholarship-policy 
+     Nội dung: đạt từ 70 điểm trở lên. Mức thưởng là 25% học phí học kỳ kế tiếp.  ## 2. Điều kiện loại trừ Sinh viê...
+-> ĐÁNH GIÁ: THẤT BẠI (Tài liệu chuẩn không nằm trong Top-3)
+Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\university\exam-regrade.md)...).
+
+======================================================================
+Câu hỏi 2: Sinh viên được đăng ký tối thiểu và tối đa bao nhiêu tín chỉ trong một học kỳ chính?
+Bộ lọc metadata: None
+Đáp án chuẩn (Gold Answer): Trong học kỳ chính, sinh viên phải đăng ký tối thiểu 12 tín chỉ và tối đa 22 tín chỉ.
+Tài liệu chuẩn (Gold Doc): course-registration
+
+Top-3 Chunks truy xuất được:
+  1. [Score: 0.269] id=course-registration#3 | doc_id=course-registration (*) [GOLD MATCH]
+     Nội dung:  và hủy đăng ký - Giai đoạn điều chỉnh học phần (Add/Drop): Diễn ra trong 2 tuần đầu tiên của học kỳ...
+  2. [Score: 0.187] id=exam-regrade#0 | doc_id=exam-regrade 
+     Nội dung: # Quy chế phúc khảo bài thi kết thúc học phần  ## 1. Điều kiện và thời hạn nộp đơn phúc khảo Mọi sin...
+  3. [Score: 0.140] id=library-faculty#0 | doc_id=library-faculty 
+     Nội dung: # Quy định mượn trả tài liệu thư viện cho giảng viên và nghiên cứu viên  ## 1. Hạn mức mượn sách Giả...
+-> ĐÁNH GIÁ: THÀNH CÔNG (Tài liệu chuẩn nằm trong Top-3)
+Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\university\course-registration.md)...).
+
+======================================================================
+Câu hỏi 3: Hạn chót nộp học phí của học kỳ là khi nào và mức phạt nộp muộn là bao nhiêu?
+Bộ lọc metadata: None
+Đáp án chuẩn (Gold Answer): Hạn chót nộp học phí là 17h00 thứ Sáu của tuần thứ 4 tính từ ngày khai giảng; phạt nộp trễ 0.05% trên tổng số tiền chậm nộp mỗi ngày.
+Tài liệu chuẩn (Gold Doc): tuition-payment
+
+Top-3 Chunks truy xuất được:
+  1. [Score: 0.244] id=library-services#1 | doc_id=library-services 
+     Nội dung: ầy thủ thư hoặc cây mượn sách tự động (Self-check).  ## 2. Thời hạn mượn và gia hạn - Thời hạn mượn ...
+  2. [Score: 0.203] id=exam-regrade#0 | doc_id=exam-regrade 
+     Nội dung: # Quy chế phúc khảo bài thi kết thúc học phần  ## 1. Điều kiện và thời hạn nộp đơn phúc khảo Mọi sin...
+  3. [Score: 0.190] id=tuition-payment#0 | doc_id=tuition-payment (*) [GOLD MATCH]
+     Nội dung: # Quy định về nộp học phí và chính sách gia hạn thanh toán  ## 1. Thời hạn nộp học phí Học phí của m...
+-> ĐÁNH GIÁ: THÀNH CÔNG (Tài liệu chuẩn nằm trong Top-3)
+Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\university\library-services.md)...).
+
+======================================================================
+Câu hỏi 4: Tiêu chuẩn để sinh viên đạt học bổng khuyến khích học tập loại Xuất sắc là gì?
+Bộ lọc metadata: None
+Đáp án chuẩn (Gold Answer): Sinh viên cần đạt điểm trung bình học kỳ (GPA) từ 3.80 trở lên và điểm rèn luyện từ 90 điểm trở lên.
+Tài liệu chuẩn (Gold Doc): scholarship-policy
+
+Top-3 Chunks truy xuất được:
+  1. [Score: 0.202] id=exam-regrade#2 | doc_id=exam-regrade 
+     Nội dung: ường hợp sau khi phúc khảo điểm thi được điều chỉnh tăng lên từ 0.5 điểm trở lên (theo thang điểm 10...
+  2. [Score: 0.131] id=exam-regrade#1 | doc_id=exam-regrade 
+     Nội dung: y điểm thi chính thức được công bố trên cổng thông tin học vụ. - Địa điểm và hình thức nộp: Sinh viê...
+  3. [Score: 0.112] id=exam-regrade#3 | doc_id=exam-regrade 
+     Nội dung: g bao gồm giảng viên đã chấm lần đầu). - Kết quả chấm phúc khảo là điểm số chính thức cuối cùng của ...
+-> ĐÁNH GIÁ: THẤT BẠI (Tài liệu chuẩn không nằm trong Top-3)
+Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\university\exam-regrade.md)...).
+
+======================================================================
+Câu hỏi 5: Thời hạn nộp đơn phúc khảo bài thi kết thúc học phần là bao lâu và lệ phí bao nhiêu?
+Bộ lọc metadata: None
+Đáp án chuẩn (Gold Answer): Thời hạn nộp đơn là trong vòng 07 ngày làm việc kể từ ngày công bố điểm; lệ phí là 100.000 VNĐ/bài thi.
+Tài liệu chuẩn (Gold Doc): exam-regrade
+
+Top-3 Chunks truy xuất được:
+  1. [Score: 0.226] id=exam-regrade#0 | doc_id=exam-regrade (*) [GOLD MATCH]
+     Nội dung: # Quy chế phúc khảo bài thi kết thúc học phần  ## 1. Điều kiện và thời hạn nộp đơn phúc khảo Mọi sin...
+  2. [Score: 0.222] id=library-faculty#1 | doc_id=library-faculty 
+     Nội dung: - Thời hạn mượn sách tiêu chuẩn đối với giảng viên là 90 ngày (tương đương một học kỳ). - Giảng viên...
+  3. [Score: 0.167] id=library-faculty#0 | doc_id=library-faculty 
+     Nội dung: # Quy định mượn trả tài liệu thư viện cho giảng viên và nghiên cứu viên  ## 1. Hạn mức mượn sách Giả...
+-> ĐÁNH GIÁ: THÀNH CÔNG (Tài liệu chuẩn nằm trong Top-3)
+Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\university\exam-regrade.md)...).
+
+======================================================================
+TỔNG KẾT: 3/5 câu hỏi có chunk liên quan trong Top-3

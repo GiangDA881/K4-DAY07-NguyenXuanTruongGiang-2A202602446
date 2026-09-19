@@ -1,18 +1,25 @@
 ---
 doc_id: library-services
-title: Dịch vụ thư viện
-audience: all               # student | faculty | staff | all
+title: Quy định mượn trả tài liệu thư viện cho sinh viên
+audience: student
 department: library
+category: library-services
 language: vi
-source_url: https://example.edu/thu-vien/dich-vu
-retrieved_at: 2026-08-02
+source_url: https://vinuni.edu.vn/library/regulations-student
+retrieved_at: 2026-09-18
 document_version: "2026.1"
 ---
 
-> Khối metadata phía trên là **template mẫu** cho K4 — thay `source_url`/`retrieved_at`/`document_version` bằng nguồn công khai thật trước khi dùng làm benchmark.
+# Quy định mượn trả tài liệu thư viện cho sinh viên
 
-# Dịch vụ thư viện (dữ liệu khởi động)
+## 1. Hạn mức mượn sách
+Sinh viên đại học đang theo học chính quy được mượn tối đa 5 đầu sách in cùng một thời điểm từ khu vực tài liệu lưu hành chung của thư viện. Sinh viên phải xuất trình thẻ sinh viên hoặc mã QR trên ứng dụng VinUni App tại quầy thủ thư hoặc cây mượn sách tự động (Self-check).
 
-Thư viện cung cấp mượn tài liệu và không gian học tập cho sinh viên, giảng viên và nhân viên. Người dùng cần mang thẻ định danh hợp lệ khi sử dụng dịch vụ mượn.
+## 2. Thời hạn mượn và gia hạn
+- Thời hạn mượn sách tiêu chuẩn đối với sinh viên là 14 ngày kể từ ngày mượn thành công.
+- Sinh viên được phép gia hạn trực tuyến tối đa 2 lần (mỗi lần thêm 7 ngày), với điều kiện đầu sách đó chưa có bạn đọc khác đặt trước (reserve).
+- Các loại tài liệu tra cứu, từ điển, luận văn thạc sĩ/tiến sĩ và sách quý hiếm chỉ được đọc tại chỗ, không cho phép mang ra khỏi thư viện.
 
-Nhóm cần bổ sung quy định thời hạn mượn, gia hạn và xử lý quá hạn từ nguồn chính thức trước khi dùng làm benchmark.
+## 3. Xử lý quá hạn và làm mất sách
+- Phí quá hạn áp dụng cho sinh viên là 5.000 VNĐ cho mỗi cuốn sách trên mỗi ngày trễ hạn. Nếu quá hạn quá 30 ngày, tài khoản thư viện của sinh viên sẽ tạm thời bị khóa.
+- Trường hợp làm mất hoặc hư hỏng tài liệu: Sinh viên phải bồi thường cuốn sách mới nguyên bản hoặc nộp phạt gấp 2 lần giá trị thực tế của cuốn sách cộng thêm phí xử lý nghiệp vụ 50.000 VNĐ.
