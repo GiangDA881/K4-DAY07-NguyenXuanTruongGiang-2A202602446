@@ -1,11 +1,11 @@
 # Báo Cáo Nhóm — Lab 7: Embedding & Vector Store
 
-**Nhóm:** Nhóm 03 — Lớp K4-L3A  
+**Nhóm:** Cocacola — Lớp K4A  
 **Thành viên:**  
 1. Nguyễn Xuân Trường Giang — MSSV: 2A202602446 (Chiến lược: FixedSize + Metadata Filter)  
-2. Lê Minh Tuấn — MSSV: 2A202602450 (Chiến lược: SentenceChunker + Metadata Filter)  
-3. Trần Hoàng Nam — MSSV: 2A202602455 (Chiến lược: RecursiveChunker + Metadata Filter)  
-**Ngày:** 19/09/2026  
+2. Hải (Chiến lược: Recursive + Baseline)  
+3. Hoàn (Chiến lược: Chunker theo Heading)  
+**Ngày nộp:** 19/09/2026  
 
 > **Nộp 1 bản / nhóm.** Phần cá nhân (hướng tiếp cận, kết quả riêng, dự đoán…) mỗi thành viên nộp riêng trong `REPORT_CANHAN.md`. Chi tiết thang điểm: `docs/SCORING.md`.
 
@@ -82,36 +82,36 @@ chunks = chunker.chunk(document_body)
 results = store.search_with_filter(query, top_k=3, metadata_filter={"audience": "student"})
 ```
 
-**Thành viên 2 — Lê Minh Tuấn (2A202602450)**
-- **Loại chiến lược:** SentenceChunker (`max_sentences_per_chunk=3`) + Metadata Filter
-- **Mô tả & lý do chọn:** Chia nhỏ văn bản theo ranh giới câu ngữ pháp tự nhiên. Vì các quy định học vụ thường được cấu trúc thành các câu văn độc lập mang tính mệnh lệnh hoặc điều kiện, việc nhóm 3 câu giúp giữ trọn vẹn mệnh đề logic mà không lo bị cắt cụt từ ngữ giữa chừng.
-- **Code snippet:**
-```python
-chunker = SentenceChunker(max_sentences_per_chunk=3)
-chunks = chunker.chunk(document_body)
-results = store.search_with_filter(query, top_k=3, metadata_filter={"audience": "student"})
-```
-
-**Thành viên 3 — Trần Hoàng Nam (2A202602455)**
-- **Loại chiến lược:** RecursiveChunker (`chunk_size=400`, separators=`["\n\n", "\n", ". ", " "]`) + Metadata Filter
-- **Mô tả & lý do chọn:** Sử dụng thuật toán đệ quy kết hợp gom gộp tuần tự theo thứ tự phân cấp Markdown: ngắt theo đoạn lớn (`\n\n`), sau đó xuống dòng (`\n`) và dấu câu (`. `). Giữ cấu trúc đề mục và tính toàn vẹn của các điều khoản quy định.
+**Thành viên 2 — Hải**
+- **Loại chiến lược:** RecursiveChunker (`chunk_size=400`, baseline separators=`["\n\n", "\n", ". ", " "]`)
+- **Mô tả & lý do chọn:** Chia nhỏ văn bản đệ quy kết hợp gom gộp tuần tự theo phân cấp Markdown. Giữ nguyên khối các điều khoản quy định theo ranh giới đoạn văn bản `\n\n`.
 - **Code snippet:**
 ```python
 chunker = RecursiveChunker(chunk_size=400, separators=["\n\n", "\n", ". ", " "])
 chunks = chunker.chunk(document_body)
-results = store.search_with_filter(query, top_k=3, metadata_filter={"audience": "student"})
+results = store.search(query, top_k=3)
+```
+
+**Thành viên 3 — Hoàn**
+- **Loại chiến lược:** Chunker theo Heading (Markdown Heading Splitter)
+- **Mô tả & lý do chọn:** Chia nhỏ văn bản dựa trên các tiêu đề Markdown (`#`, `##`, `###`). Mỗi chunk tương ứng với một đề mục nội dung hoàn chỉnh của quy định học vụ (ví dụ: từng điều khoản lớn).
+- **Code snippet:**
+```python
+# Tách văn bản theo ranh giới các heading Markdown
+chunks = split_by_markdown_headers(document_body, headers_to_split_on=["#", "##"])
+results = store.search(query, top_k=3)
 ```
 
 ### So Sánh Giữa Các Thành Viên
 
 | Thành viên | Chiến lược (Strategy) | Điểm truy xuất (/10) | Điểm mạnh | Điểm yếu |
 |-----------|----------|----------------------|-----------|----------|
-| Nguyễn Xuân Trường Giang | FixedSizeChunker (350, 50) + Filter | 6 / 10 | Kích thước chunk đồng đều, overlap 50 ký tự giúp giảm mất mát thông tin tại biên cắt. | Vẫn có trường hợp cắt ngang lưng một câu phức hoặc ngắt giữa chừng con số điều kiện. |
-| Lê Minh Tuấn | SentenceChunker (3 câu) + Filter | 8 / 10 | 100% câu văn hoàn chỉnh ngữ pháp, không bao giờ bị cụt từ; độ mạch lạc câu rất cao. | Độ dài chunk không đồng đều (có câu ngắn 20 ký tự, có câu ghép dài 150 ký tự). |
-| Trần Hoàng Nam | RecursiveChunker (400) + Filter | 8 / 10 | Tôn trọng cấu trúc phân đoạn của văn bản quy chế, độ dài chunk được kiểm soát tối ưu. | Cần tinh chỉnh danh sách separators cẩn thận nếu văn bản chứa định dạng danh sách bullet points. |
+| Nguyễn Xuân Trường Giang | FixedSizeChunker (350, 50) + Filter | 6 / 10 | Kích thước chunk đồng đều, overlap 50 ký tự giảm mất mát ngữ cảnh biên cắt. Kết hợp metadata filter giúp loại bỏ tài liệu sai đối tượng. | Cắt cứng theo số ký tự dễ làm đứt gãy câu hoặc điều khoản logic. |
+| Hải | Recursive + Baseline (400) | 8 / 10 | Tôn trọng ranh giới đoạn văn và câu; đạt kết quả Top-1 xuất sắc ở các câu 1, 4, 5. | Không có metadata filter nên một số truy vấn có thể bị lẫn đối tượng. |
+| Hoàn | Chunker theo Heading | 6 / 10 | Đảm bảo tính toàn vẹn 100% của một đề mục quy chế lớn, không bị ngắt quãng. | Độ dài chunk quá dài (trung bình ~1290 ký tự) làm loãng vector embedding. |
 
 **Chiến lược nào tốt nhất cho chủ đề này? Tại sao?**
-> `RecursiveChunker` và `SentenceChunker` đều thể hiện sự vượt trội hơn so với `FixedSizeChunker` đối với văn bản quy chế học vụ. Trong đó, `RecursiveChunker` là chiến lược tối ưu nhất vì nó phân cấp tự nhiên theo cấu trúc văn bản hành chính (tách theo từng điều khoản `\n\n`), đồng thời gom gộp các đoạn nhỏ giúp mỗi chunk là một điều khoản hoàn chỉnh mang trọn vẹn ngữ cảnh ngữ nghĩa.
+> `RecursiveChunker` của Hải là chiến lược tối ưu nhất cho văn bản quy chế học vụ vì nó phân cấp tự nhiên theo cấu trúc đoạn văn hành chính (`\n\n`), giữ trọn vẹn ngữ cảnh của từng điều khoản mà không bị quá dài như Heading Chunker hay quá cứng nhắc như FixedSizeChunker. Kết hợp thêm `Metadata Filtering` của Giang sẽ tạo thành pipeline hoàn hảo nhất.
 
 ---
 
