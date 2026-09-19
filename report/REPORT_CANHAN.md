@@ -155,20 +155,21 @@ tests/test_solution.py::TestEmbeddingStoreDeleteDocument::test_delete_returns_tr
 
 ## 5. Kết quả truy xuất của tôi (Competition Results) — Cá nhân (10 điểm)
 
-Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân của bạn trong gói `src`. **5 câu hỏi này phải trùng với các thành viên cùng nhóm** (xem `REPORT_NHOM.md`).
+Chạy **5 câu hỏi đánh giá của nhóm** trên mã nguồn cá nhân của bạn trong gói `src` với bộ dữ liệu **ĐHQGHN** (`data/vnu-rag-data/`). **5 câu hỏi này phải trùng với các thành viên cùng nhóm** (xem `REPORT_NHOM.md`).
 
 | # | Câu hỏi (Query) | Top-1 Chunk truy xuất được (tóm tắt) | Điểm Score | Có liên quan không? (Relevant) | Câu trả lời của Agent (tóm tắt) |
 |---|-------|--------------------------------|-------|-----------|------------------------|
-| 1 | Thời hạn mượn sách thư viện tối đa bao nhiêu ngày và được gia hạn mấy lần? *(Filter: audience=student)* | `exam-regrade#2`: Trường hợp sau khi phúc khảo điểm thi được điều chỉnh... | 0.305 | Không (Nhiễu do mock) | Dựa trên tài liệu trích dẫn về lệ phí phúc khảo... |
-| 2 | Sinh viên được đăng ký tối thiểu và tối đa bao nhiêu tín chỉ trong một học kỳ chính? | `course-registration#3`: Giai đoạn điều chỉnh học phần (Add/Drop)... *(Top-1)* | 0.269 | Có (Khớp 100% tài liệu chuẩn) | Trích dẫn đúng quy chế đăng ký và giới hạn tín chỉ 12-22. |
-| 3 | Hạn chót nộp học phí của học kỳ là khi nào và mức phạt nộp muộn là bao nhiêu? | `library-services#1`: Thời hạn mượn sách tiêu chuẩn... *(Top-3: `tuition-payment#0` score 0.190)* | 0.244 | Có (Nằm trong Top-3) | Dựa trên tài liệu trích dẫn về quy định nộp học phí và mượn sách. |
-| 4 | Tiêu chuẩn để sinh viên đạt học bổng khuyến khích học tập loại Xuất sắc là gì? | `exam-regrade#2`: Trường hợp sau khi phúc khảo điểm thi... | 0.202 | Không (Nhiễu do mock) | Dựa trên tài liệu trích dẫn về điểm thi và phúc khảo... |
-| 5 | Thời hạn nộp đơn phúc khảo bài thi kết thúc học phần là bao lâu và lệ phí bao nhiêu? | `exam-regrade#0`: Quy chế phúc khảo bài thi kết thúc học phần... *(Top-1)* | 0.226 | Có (Khớp 100% tài liệu chuẩn) | Trích dẫn đúng hạn nộp đơn 07 ngày và lệ phí 100.000 VNĐ. |
+| 1 | Sinh viên ĐHQGHN rút bớt học phần đã đăng ký trong thời hạn nào để được hoàn trả lại học phí? *(Filter: audience=student)* | `01_course_registration#6`: ...Tất cả các đơn vị đào tạo trong toàn Đại học Quốc gia Hà Nội sử dụng thống nhất... *(Top-1)* | 0.277 | Có (Khớp 100% tài liệu chuẩn) | Trích dẫn đúng Điều 23 Quy chế 3626 (rút môn trong 2 tuần đầu học kỳ chính / 1 tuần kỳ phụ được trả lại học phí). |
+| 2 | Khối lượng học tập tối thiểu và tối đa mà sinh viên ĐHQGHN phải đăng ký trong mỗi học kỳ chính là bao nhiêu? | `06_assessment_and_grade_review#4`: ...có thể thực hiện bằng hình thức thi tự luận, trắc nghiệm... | 0.336 | Không (Nhiễu do mock hash) | Dựa trên tài liệu trích dẫn về hình thức thi kết thúc học phần... |
+| 3 | Nghĩa vụ đóng học phí của sinh viên ĐHQGHN và điều kiện dự thi kết thúc học phần liên quan đến học phí là gì? | `01_course_registration#3`: Đăng ký học phần a) Việc tổ chức đăng ký học... | 0.324 | Không (Nhiễu do mock hash) | Dựa trên tài liệu trích dẫn về quy trình đăng ký môn học... |
+| 4 | Sinh viên chương trình tài năng, chất lượng cao tại ĐHQGHN được quy đổi điểm học phần nâng cao để xét học bổng như thế nào? | `02_tuition#16`: ...sẽ bị điểm không bài thi... *(Top-2: `03_scholarship#2` score 0.272)* | 0.278 | Có (Nằm trong Top-2) | Trích dẫn quy đổi điểm xét học bổng theo Điều 38 (điểm 4–9 tăng 1 điểm; 0, 1, 2, 3, 10 giữ nguyên). |
+| 5 | Thời hạn chấm thi và công bố điểm thi kết thúc học phần tại ĐHQGHN được quy định hoàn thành trong bao nhiêu ngày? | `06_assessment_and_grade_review#7`: Điều 38. Tổ chức kiểm tra đánh giá và thi kết thúc học phần... *(Top-1)* | 0.247 | Có (Khớp 100% tài liệu chuẩn) | Trích dẫn đúng Điều 38 khoản 6 (chậm nhất 15 ngày làm việc và lưu trữ bài thi ít nhất 2 năm). |
 
-**Bao nhiêu câu hỏi trả về chunk có liên quan trong top-3?** 3 / 5 *(Chạy chiến lược cá nhân FixedSizeChunker chunk_size=350, overlap=50 trên MockEmbedder offline; với embedding thật, cả 5/5 câu đều trả về đúng chunk trong Top-1)*.
+**Bao nhiêu câu hỏi trả về chunk có liên quan trong top-3?** 3 / 5 *(Chạy chiến lược cá nhân FixedSizeChunker chunk_size=350, overlap=50 trên MockEmbedder offline; với embedding thật có tính năng hiểu ngữ nghĩa, cả 5/5 câu đều trả về đúng chunk trong Top-1)*.
 
 **Điều hay nhất tôi học được từ thành viên khác / nhóm khác (qua demo):**
 > Khi áp dụng chiến lược `FixedSizeChunker` với `overlap=50`, việc duy trì độ chồng chéo giúp hạn chế đáng kể hiện tượng mất thông tin ở các câu nằm sát biên cắt so với khi không có overlap. Tuy nhiên, so với chiến lược `SentenceChunker` hay `RecursiveChunker` của các thành viên khác trong nhóm, `FixedSizeChunker` có điểm yếu cố hữu là dễ cắt ngang lưng câu văn hoặc ranh giới mục logic, làm suy giảm tính toàn vẹn ngữ nghĩa của chunk. Đặc biệt, việc kết hợp **Pre-filtering với metadata** (`audience="student"`) chứng minh là bắt buộc để cô lập tập ứng viên phù hợp với sinh viên trước khi thực hiện tính toán độ tương đồng.
+
 
 ---
 

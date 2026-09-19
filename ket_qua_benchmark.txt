@@ -1,88 +1,88 @@
 === KẾT QUẢ BENCHMARK TRUY XUẤT (K4-L3A) ===
 Sinh viên: Nguyễn Xuân Trường Giang - MSSV: 2A202602446
-Chủ đề: Dịch vụ & Quy định Đại học (Corpus: university)
+Chủ đề: Dịch vụ & Quy định Đại học (Corpus: vnu-rag-data)
 Chiến lược: FixedSizeChunker (chunk_size=350, overlap=50) + Metadata Filter
-Tổng số tài liệu: 6 | Tổng số chunks: 26
+Tổng số tài liệu: 6 | Tổng số chunks: 97
 
 ======================================================================
-Câu hỏi 1: Thời hạn mượn sách thư viện tối đa bao nhiêu ngày và được gia hạn mấy lần?
+Câu hỏi 1: Sinh viên ĐHQGHN rút bớt học phần đã đăng ký trong thời hạn nào để được hoàn trả lại học phí?
 Bộ lọc metadata: {'audience': 'student'}
-Đáp án chuẩn (Gold Answer): Thời hạn mượn sách tiêu chuẩn cho sinh viên là 14 ngày, được gia hạn trực tuyến tối đa 2 lần (mỗi lần thêm 7 ngày).
-Tài liệu chuẩn (Gold Doc): library-services
+Đáp án chuẩn (Gold Answer): Theo Điều 23 Quy chế đào tạo ĐHQGHN, việc rút bớt học phần chỉ được chấp nhận trong 2 tuần kể từ đầu học kỳ chính (hoặc 1 tuần kể từ đầu học kỳ phụ) và được trả lại học phí.
+Tài liệu chuẩn (Gold Doc): 01_course_registration
 
 Top-3 Chunks truy xuất được:
-  1. [Score: 0.305] id=exam-regrade#2 | doc_id=exam-regrade 
-     Nội dung: ường hợp sau khi phúc khảo điểm thi được điều chỉnh tăng lên từ 0.5 điểm trở lên (theo thang điểm 10...
-  2. [Score: 0.302] id=scholarship-policy#0 | doc_id=scholarship-policy 
-     Nội dung: # Chính sách học bổng khuyến khích học tập và tài năng  ## 1. Tiêu chuẩn xét học bổng khuyến khích h...
-  3. [Score: 0.216] id=scholarship-policy#2 | doc_id=scholarship-policy 
-     Nội dung: đạt từ 70 điểm trở lên. Mức thưởng là 25% học phí học kỳ kế tiếp.  ## 2. Điều kiện loại trừ Sinh viê...
+  1. [Score: 0.277] id=01_course_registration#6 | doc_id=01_course_registration (*) [GOLD MATCH]
+     Nội dung: ết thúc việc chấm thi;  c) Tất cả các đơn vị đào tạo trong toàn Đại học Quốc gia Hà Nội sử dụng  th...
+  2. [Score: 0.267] id=06_assessment_and_grade_review#21 | doc_id=06_assessment_and_grade_review 
+     Nội dung: ố điểm học phần được hoàn thành chậm nhất là 15 ngày làm việc kể từ ngày tổ chức thi kết thúc học ph...
+  3. [Score: 0.230] id=03_scholarship#5 | doc_id=03_scholarship 
+     Nội dung:   Các đối tượng ở điểm a, b,c khoản 3, Điều này thời gian nghỉ học tạm thời  không tính vào thời gi...
+-> ĐÁNH GIÁ: THÀNH CÔNG (Tài liệu chuẩn nằm trong Top-3)
+Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\vnu-rag-data\04_library.md)...).
+
+======================================================================
+Câu hỏi 2: Khối lượng học tập tối thiểu và tối đa mà sinh viên ĐHQGHN phải đăng ký trong mỗi học kỳ chính là bao nhiêu?
+Bộ lọc metadata: None
+Đáp án chuẩn (Gold Answer): Theo Điều 21 Quy chế đào tạo ĐHQGHN, khối lượng đăng ký tối thiểu không ít hơn 2/3 và tối đa không vượt quá 3/2 khối lượng trung bình một học kỳ theo kế hoạch học tập chuẩn (không tính học kỳ cuối khóa).
+Tài liệu chuẩn (Gold Doc): 01_course_registration
+
+Top-3 Chunks truy xuất được:
+  1. [Score: 0.336] id=06_assessment_and_grade_review#4 | doc_id=06_assessment_and_grade_review 
+     Nội dung:  có thể thực hiện bằng hình thức thi tự luận, trắc  nghiệm, vấn đáp, làm bài tập lớn hoặc kết hợp cá...
+  2. [Score: 0.330] id=02_tuition#18 | doc_id=02_tuition 
+     Nội dung: ị đào tạo đối với chương trình đào tạo này;  - Thường xuyên phản ánh tình hình học tập, nghiên cứu,...
+  3. [Score: 0.315] id=05_dormitory#5 | doc_id=05_dormitory 
+     Nội dung:  giường tầng, bàn ghế tự học, tủ đồ cá nhân, bình nước nóng, điều hòa nhiệt độ, mạng Internet wifi t...
 -> ĐÁNH GIÁ: THẤT BẠI (Tài liệu chuẩn không nằm trong Top-3)
-Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\university\exam-regrade.md)...).
+Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\vnu-rag-data\06_assessment_and_grade_review.md)...).
 
 ======================================================================
-Câu hỏi 2: Sinh viên được đăng ký tối thiểu và tối đa bao nhiêu tín chỉ trong một học kỳ chính?
+Câu hỏi 3: Nghĩa vụ đóng học phí của sinh viên ĐHQGHN và điều kiện dự thi kết thúc học phần liên quan đến học phí là gì?
 Bộ lọc metadata: None
-Đáp án chuẩn (Gold Answer): Trong học kỳ chính, sinh viên phải đăng ký tối thiểu 12 tín chỉ và tối đa 22 tín chỉ.
-Tài liệu chuẩn (Gold Doc): course-registration
+Đáp án chuẩn (Gold Answer): Theo Quy chế đào tạo ĐHQGHN, sinh viên có nghĩa vụ nộp học phí đầy đủ đúng hạn; sinh viên chỉ được dự thi kết thúc học phần nếu có điểm đánh giá bộ phận lớn hơn 0 và đã trả học phí đầy đủ.
+Tài liệu chuẩn (Gold Doc): 02_tuition
 
 Top-3 Chunks truy xuất được:
-  1. [Score: 0.269] id=course-registration#3 | doc_id=course-registration (*) [GOLD MATCH]
-     Nội dung:  và hủy đăng ký - Giai đoạn điều chỉnh học phần (Add/Drop): Diễn ra trong 2 tuần đầu tiên của học kỳ...
-  2. [Score: 0.187] id=exam-regrade#0 | doc_id=exam-regrade 
-     Nội dung: # Quy chế phúc khảo bài thi kết thúc học phần  ## 1. Điều kiện và thời hạn nộp đơn phúc khảo Mọi sin...
-  3. [Score: 0.140] id=library-faculty#0 | doc_id=library-faculty 
-     Nội dung: # Quy định mượn trả tài liệu thư viện cho giảng viên và nghiên cứu viên  ## 1. Hạn mức mượn sách Giả...
--> ĐÁNH GIÁ: THÀNH CÔNG (Tài liệu chuẩn nằm trong Top-3)
-Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\university\course-registration.md)...).
-
-======================================================================
-Câu hỏi 3: Hạn chót nộp học phí của học kỳ là khi nào và mức phạt nộp muộn là bao nhiêu?
-Bộ lọc metadata: None
-Đáp án chuẩn (Gold Answer): Hạn chót nộp học phí là 17h00 thứ Sáu của tuần thứ 4 tính từ ngày khai giảng; phạt nộp trễ 0.05% trên tổng số tiền chậm nộp mỗi ngày.
-Tài liệu chuẩn (Gold Doc): tuition-payment
-
-Top-3 Chunks truy xuất được:
-  1. [Score: 0.244] id=library-services#1 | doc_id=library-services 
-     Nội dung: ầy thủ thư hoặc cây mượn sách tự động (Self-check).  ## 2. Thời hạn mượn và gia hạn - Thời hạn mượn ...
-  2. [Score: 0.203] id=exam-regrade#0 | doc_id=exam-regrade 
-     Nội dung: # Quy chế phúc khảo bài thi kết thúc học phần  ## 1. Điều kiện và thời hạn nộp đơn phúc khảo Mọi sin...
-  3. [Score: 0.190] id=tuition-payment#0 | doc_id=tuition-payment (*) [GOLD MATCH]
-     Nội dung: # Quy định về nộp học phí và chính sách gia hạn thanh toán  ## 1. Thời hạn nộp học phí Học phí của m...
--> ĐÁNH GIÁ: THÀNH CÔNG (Tài liệu chuẩn nằm trong Top-3)
-Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\university\library-services.md)...).
-
-======================================================================
-Câu hỏi 4: Tiêu chuẩn để sinh viên đạt học bổng khuyến khích học tập loại Xuất sắc là gì?
-Bộ lọc metadata: None
-Đáp án chuẩn (Gold Answer): Sinh viên cần đạt điểm trung bình học kỳ (GPA) từ 3.80 trở lên và điểm rèn luyện từ 90 điểm trở lên.
-Tài liệu chuẩn (Gold Doc): scholarship-policy
-
-Top-3 Chunks truy xuất được:
-  1. [Score: 0.202] id=exam-regrade#2 | doc_id=exam-regrade 
-     Nội dung: ường hợp sau khi phúc khảo điểm thi được điều chỉnh tăng lên từ 0.5 điểm trở lên (theo thang điểm 10...
-  2. [Score: 0.131] id=exam-regrade#1 | doc_id=exam-regrade 
-     Nội dung: y điểm thi chính thức được công bố trên cổng thông tin học vụ. - Địa điểm và hình thức nộp: Sinh viê...
-  3. [Score: 0.112] id=exam-regrade#3 | doc_id=exam-regrade 
-     Nội dung: g bao gồm giảng viên đã chấm lần đầu). - Kết quả chấm phúc khảo là điểm số chính thức cuối cùng của ...
+  1. [Score: 0.324] id=01_course_registration#3 | doc_id=01_course_registration 
+     Nội dung: Đăng ký học phần  a) Việc tổ chức đăng ký học các học phần trong chương trình đào tạo do thủ  ...
+  2. [Score: 0.258] id=06_assessment_and_grade_review#4 | doc_id=06_assessment_and_grade_review 
+     Nội dung:  có thể thực hiện bằng hình thức thi tự luận, trắc  nghiệm, vấn đáp, làm bài tập lớn hoặc kết hợp cá...
+  3. [Score: 0.244] id=06_assessment_and_grade_review#2 | doc_id=06_assessment_and_grade_review 
+     Nội dung: oạt động của giảng viên sử dụng các  kỹ thuật đánh giá khác nhau trong các hình thức dạy học nhằm ...
 -> ĐÁNH GIÁ: THẤT BẠI (Tài liệu chuẩn không nằm trong Top-3)
-Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\university\exam-regrade.md)...).
+Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\vnu-rag-data\01_course_registration.md)...).
 
 ======================================================================
-Câu hỏi 5: Thời hạn nộp đơn phúc khảo bài thi kết thúc học phần là bao lâu và lệ phí bao nhiêu?
+Câu hỏi 4: Sinh viên chương trình tài năng, chất lượng cao tại ĐHQGHN được quy đổi điểm học phần nâng cao để xét học bổng như thế nào?
 Bộ lọc metadata: None
-Đáp án chuẩn (Gold Answer): Thời hạn nộp đơn là trong vòng 07 ngày làm việc kể từ ngày công bố điểm; lệ phí là 100.000 VNĐ/bài thi.
-Tài liệu chuẩn (Gold Doc): exam-regrade
+Đáp án chuẩn (Gold Answer): Theo Điều 38 khoản 9, điểm các học phần nâng cao, bổ sung được quy đổi làm căn cứ xét học bổng theo công thức: các điểm từ 4 đến 9 được tăng lên 1 điểm; các điểm 0, 1, 2, 3 và 10 giữ nguyên.
+Tài liệu chuẩn (Gold Doc): 03_scholarship
 
 Top-3 Chunks truy xuất được:
-  1. [Score: 0.226] id=exam-regrade#0 | doc_id=exam-regrade (*) [GOLD MATCH]
-     Nội dung: # Quy chế phúc khảo bài thi kết thúc học phần  ## 1. Điều kiện và thời hạn nộp đơn phúc khảo Mọi sin...
-  2. [Score: 0.222] id=library-faculty#1 | doc_id=library-faculty 
-     Nội dung: - Thời hạn mượn sách tiêu chuẩn đối với giảng viên là 90 ngày (tương đương một học kỳ). - Giảng viên...
-  3. [Score: 0.167] id=library-faculty#0 | doc_id=library-faculty 
-     Nội dung: # Quy định mượn trả tài liệu thư viện cho giảng viên và nghiên cứu viên  ## 1. Hạn mức mượn sách Giả...
+  1. [Score: 0.278] id=02_tuition#16 | doc_id=02_tuition 
+     Nội dung: sẽ bị điểm không (0) bài thi học phần đó và  phải ra khỏi phòng thi ngay sau khi có quyết định đìn...
+  2. [Score: 0.272] id=03_scholarship#2 | doc_id=03_scholarship (*) [GOLD MATCH]
+     Nội dung: sách  nhà nước trong thời gian theo học.  3. Sinh viên được xin nghỉ học tạm thời và bảo lưu kết qu...
+  3. [Score: 0.225] id=06_assessment_and_grade_review#18 | doc_id=06_assessment_and_grade_review 
+     Nội dung: iểm các học phần nâng cao, bổ sung được quy đổi để ghi vào phụ lục văn  bằng và xếp loại học tập ...
 -> ĐÁNH GIÁ: THÀNH CÔNG (Tài liệu chuẩn nằm trong Top-3)
-Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\university\exam-regrade.md)...).
+Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\vnu-rag-data\02_tuition.md)...).
+
+======================================================================
+Câu hỏi 5: Thời hạn chấm thi và công bố điểm thi kết thúc học phần tại ĐHQGHN được quy định hoàn thành trong bao nhiêu ngày?
+Bộ lọc metadata: None
+Đáp án chuẩn (Gold Answer): Theo Điều 38 khoản 6 Quy chế đào tạo ĐHQGHN, việc chấm thi và công bố điểm học phần được hoàn thành chậm nhất là 15 ngày làm việc kể từ ngày tổ chức thi kết thúc học phần; đề thi và bài thi lưu trữ ít nhất 2 năm.
+Tài liệu chuẩn (Gold Doc): 06_assessment_and_grade_review
+
+Top-3 Chunks truy xuất được:
+  1. [Score: 0.247] id=06_assessment_and_grade_review#7 | doc_id=06_assessment_and_grade_review (*) [GOLD MATCH]
+     Nội dung: thi kết thúc học phần và công bố điểm (Điều 38)  Điều 38. Tổ chức kiểm tra đánh giá và thi kết thu...
+  2. [Score: 0.230] id=02_tuition#20 | doc_id=02_tuition 
+     Nội dung: Điều 23 khoản 2: - Việc rút bớt học phần chỉ được chấp nhận trong 2 tuần kể từ đầu học kỳ chính, 1 t...
+  3. [Score: 0.219] id=02_tuition#17 | doc_id=02_tuition 
+     Nội dung: ăm nếu vi phạm lần thứ nhất và buộc thôi học nếu vi phạm lần thứ hai.  Ngoài những nghĩa vụ chung ...
+-> ĐÁNH GIÁ: THÀNH CÔNG (Tài liệu chuẩn nằm trong Top-3)
+Câu trả lời của Agent: Dựa trên tài liệu quy định trích dẫn ([1] (Source: data\vnu-rag-data\06_assessment_and_grade_review.md)...).
 
 ======================================================================
 TỔNG KẾT: 3/5 câu hỏi có chunk liên quan trong Top-3

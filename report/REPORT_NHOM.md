@@ -123,11 +123,11 @@ results = store.search_with_filter(query, top_k=3, metadata_filter={"audience": 
 
 | # | Câu hỏi (Query) | Câu trả lời chuẩn (Gold Answer) | Chunk nào chứa thông tin? |
 |---|-------|-------------------------------|--------------------------|
-| 1 | Thời hạn mượn sách thư viện tối đa bao nhiêu ngày và được gia hạn mấy lần? *(Yêu cầu lọc audience="student")* | Thời hạn mượn sách tiêu chuẩn cho sinh viên là 14 ngày, được gia hạn trực tuyến tối đa 2 lần (mỗi lần thêm 7 ngày). | `library-services#1` / Mục 2 |
-| 2 | Sinh viên được đăng ký tối thiểu và tối đa bao nhiêu tín chỉ trong một học kỳ chính? | Trong học kỳ chính, sinh viên phải đăng ký tối thiểu 12 tín chỉ và tối đa 22 tín chỉ (sinh viên diện cảnh báo tối đa 14 tín chỉ). | `course-registration#2` / Mục 2 |
-| 3 | Hạn chót nộp học phí của học kỳ là khi nào và mức phạt nộp muộn là bao nhiêu? | Hạn chót là 17h00 thứ Sáu tuần thứ 4 tính từ ngày khai giảng; phạt nộp muộn 0.05% trên tổng số tiền chậm nộp mỗi ngày. | `tuition-payment#0`, `#1` / Mục 1 & 2 |
-| 4 | Tiêu chuẩn để sinh viên đạt học bổng khuyến khích học tập loại Xuất sắc là gì? | GPA học kỳ đạt từ 3.80 trở lên, điểm rèn luyện từ 90 điểm trở lên và không vi phạm kỷ luật hay nợ môn. | `scholarship-policy#1` / Mục 1 |
-| 5 | Thời hạn nộp đơn phúc khảo bài thi kết thúc học phần là bao lâu và lệ phí bao nhiêu? | Thời hạn nộp đơn là trong vòng 07 ngày làm việc kể từ ngày công bố điểm; lệ phí là 100.000 VNĐ/bài thi. | `exam-regrade#0`, `#1` / Mục 1 & 2 |
+| 1 | Sinh viên ĐHQGHN rút bớt học phần đã đăng ký trong thời hạn nào để được hoàn trả lại học phí? *(Yêu cầu lọc audience="student")* | Việc rút bớt học phần chỉ được chấp nhận trong 2 tuần kể từ đầu học kỳ chính, 1 tuần kể từ đầu học kỳ phụ; sinh viên được hoàn trả học phí học phần rút bớt (Điều 23). | `01_course_registration#6` / Điều 23 |
+| 2 | Khối lượng học tập tối thiểu và tối đa mà sinh viên ĐHQGHN phải đăng ký trong mỗi học kỳ chính là bao nhiêu? | Tối thiểu không ít hơn 2/3 và tối đa không quá 3/2 khối lượng trung bình một học kỳ theo kế hoạch học tập chuẩn (Điều 21). | `01_course_registration#0` / Điều 21 |
+| 3 | Nghĩa vụ đóng học phí của sinh viên ĐHQGHN và điều kiện dự thi kết thúc học phần liên quan đến học phí là gì? | Sinh viên có trách nhiệm đóng học phí theo quy định của ĐHQGHN; sinh viên chưa hoàn thành nghĩa vụ học phí sẽ không được dự thi kết thúc học phần (Điều 58, Điều 60). | `02_tuition#0`, `#17` / Điều 58, 60 |
+| 4 | Sinh viên chương trình tài năng, chất lượng cao tại ĐHQGHN được quy đổi điểm học phần nâng cao để xét học bổng như thế nào? | Điểm từ 4 đến 9 được cộng thêm 1 điểm khi tính điểm xét học bổng; điểm 0, 1, 2, 3 và 10 giữ nguyên (Điều 38). | `03_scholarship#2` / Điều 38 |
+| 5 | Thời hạn chấm thi và công bố điểm thi kết thúc học phần tại ĐHQGHN được quy định hoàn thành trong bao nhiêu ngày? | Thời gian chấm thi và công bố điểm thi chậm nhất là 15 ngày làm việc kể từ ngày thi cuối cùng của học phần (Điều 38 khoản 6). | `06_assessment_and_grade_review#7` / Điều 38 |
 
 ### Tổng hợp chất lượng truy xuất của nhóm
 
@@ -135,14 +135,14 @@ results = store.search_with_filter(query, top_k=3, metadata_filter={"audience": 
 
 | # | Câu hỏi | Chiến lược tốt nhất cho câu này | Có chunk liên quan trong top-3? | Ghi chú |
 |---|---------|-------------------------------|-------------------------------|---------|
-| 1 | Mượn sách thư viện & gia hạn | SentenceChunker + Filter | Có (Top-1) | Bắt buộc phải có `metadata_filter={"audience": "student"}` để không lấy nhầm hạn 90 ngày của giảng viên. |
-| 2 | Số tín chỉ tối thiểu & tối đa | FixedSizeChunker & Recursive | Có (Top-1) | Cả hai chiến lược đều trả về đúng Mục 2 của `course-registration`. |
-| 3 | Hạn nộp học phí & phí phạt trễ | FixedSizeChunker | Có (Top-3) | `tuition-payment#0` nằm trong Top-3 với score 0.190. |
-| 4 | Tiêu chuẩn học bổng Xuất sắc | RecursiveChunker | Có (Top-1) | Recursive giữ trọn vẹn khối tiêu chuẩn GPA và điểm rèn luyện. |
-| 5 | Thời hạn & lệ phí phúc khảo | FixedSizeChunker & Sentence | Có (Top-1) | `exam-regrade#0` đạt vị trí Top-1 với điểm số cao nhất (score 0.226). |
+| 1 | Thời hạn rút bớt học phần hoàn phí | FixedSize & Sentence (+Filter) | Có (Top-1) | Bắt buộc phải có `metadata_filter={"audience": "student"}` để khu biệt đúng quyền lợi sinh viên. |
+| 2 | Khối lượng tín chỉ tối thiểu/tối đa | RecursiveChunker | Có (Top-1) | RecursiveChunker tách trọn vẹn khối Điều 21 Quy chế 3626. |
+| 3 | Nghĩa vụ học phí & cấm thi | SentenceChunker | Có (Top-1) | SentenceChunker cô lập chính xác câu quy định chế tài cấm thi do nợ học phí. |
+| 4 | Quy đổi điểm học bổng tài năng | FixedSizeChunker | Có (Top-2) | Nằm trong Top-2 với score 0.272. |
+| 5 | Thời hạn chấm & công bố điểm | FixedSize & Recursive | Có (Top-1) | Khớp chính xác Top-1 với điểm số cao nhất (score 0.247). |
 
 **Lọc bằng metadata có giúp ích không? Ở câu hỏi nào?**
-> **Rất hữu ích và mang tính quyết định**, thể hiện rõ rệt nhất ở **Câu hỏi 1** ("Thời hạn mượn sách thư viện tối đa bao nhiêu ngày và được gia hạn mấy lần?"). Nếu không có bộ lọc `metadata_filter={"audience": "student"}`, hệ thống sẽ truy xuất lẫn lộn tài liệu `library-faculty.md` (quy định giảng viên được mượn 90 ngày, tối đa 20 cuốn) và agent sẽ đưa ra câu trả lời sai đối tượng cho sinh viên. Nhờ áp dụng Pre-filtering, 100% các ứng viên không phải sinh viên bị loại bỏ ngay từ đầu, đảm bảo tính chính xác và an toàn tuyệt đối cho câu trả lời.
+> **Rất hữu ích và mang tính quyết định**, thể hiện rõ rệt nhất ở **Câu hỏi 1** ("Sinh viên ĐHQGHN rút bớt học phần đã đăng ký trong thời hạn nào để được hoàn trả lại học phí?"). Nếu không có bộ lọc `metadata_filter={"audience": "student"}`, hệ thống sẽ truy xuất lẫn lộn các tài liệu chung hoặc tài liệu quản lý đơn vị, khiến câu trả lời không tập trung vào đúng quy chế của người học. Nhờ áp dụng Pre-filtering, 100% các ứng viên không phù hợp bị loại bỏ ngay từ đầu, đảm bảo tính chính xác và an toàn tuyệt đối cho câu trả lời.
 
 ---
 
