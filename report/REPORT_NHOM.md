@@ -69,6 +69,26 @@ Các file trong corpus là **regulation/service summaries có dẫn nguồn**, k
 
 ## 2. Thiết kế chiến lược (Strategy Design) — Nhóm (15 điểm)
 
+> Mỗi thành viên thử **một chiến lược khác nhau** trên cùng bộ tài liệu; nhóm tổng hợp và so sánh ở đây.
+
+### Phân tích đường cơ sở (Baseline Analysis)
+
+Chạy `ChunkingStrategyComparator().compare()` trên 3 tài liệu sau khi bỏ YAML front matter, với `chunk_size=200`. `SentenceChunker` được cấu hình theo mặc định tối đa 3 câu/chunk.
+
+| Tài liệu | Chiến lược (Strategy) | Số lượng Chunk | Độ dài trung bình | Giữ được ngữ cảnh không? |
+|-----------|----------|-------------|------------|-------------------|
+| 01_course_registration.md | FixedSizeChunker (`fixed_size`) | 11 | 189.3 | Một phần; kích thước đều nhưng có thể cắt giữa câu/điều khoản. |
+| 01_course_registration.md | SentenceChunker (`by_sentences`) | 6 | 345.0 | Tốt; giữ nguyên ranh giới câu nhưng chunk thường dài hơn 200 ký tự. |
+| 01_course_registration.md | RecursiveChunker (`recursive`) | 14 | 146.9 | Tốt; ưu tiên ranh giới đoạn/câu nhưng tạo nhiều chunk nhỏ hơn. |
+| 04_library.md | FixedSizeChunker (`fixed_size`) | 8 | 186.0 | Một phần; kích thước đều nhưng có thể tách rời danh sách dịch vụ. |
+| 04_library.md | SentenceChunker (`by_sentences`) | 6 | 246.7 | Tốt; giữ câu và ý dịch vụ tương đối trọn vẹn. |
+| 04_library.md | RecursiveChunker (`recursive`) | 10 | 147.2 | Tốt; giữ ranh giới đoạn tốt hơn FixedSize nhưng nhiều chunk hơn. |
+| 06_assessment_and_grade_review.md | FixedSizeChunker (`fixed_size`) | 11 | 192.6 | Một phần; có nguy cơ tách điều kiện và mốc thời gian. |
+| 06_assessment_and_grade_review.md | SentenceChunker (`by_sentences`) | 6 | 351.0 | Tốt; phù hợp văn bản quy định có câu đầy đủ nhưng chunk khá dài. |
+| 06_assessment_and_grade_review.md | RecursiveChunker (`recursive`) | 15 | 139.7 | Tốt; giữ các đoạn nhỏ theo ranh giới tự nhiên, nhưng số chunk cao. |
+
+**Nhận xét baseline:** FixedSize có độ dài ổn định và số chunk vừa phải nhưng dễ cắt mất ngữ cảnh. SentenceChunker giữ ranh giới câu tốt nhất trong baseline nhưng độ dài trung bình vượt `chunk_size=200`. RecursiveChunker giữ cấu trúc đoạn/câu tốt và linh hoạt hơn, đổi lại tạo nhiều chunk nhất. Kết quả này là cơ sở để so sánh với `HeadingChunker`, chiến lược của thành viên R3.
+
 ### Phân tích chiến lược trên cùng corpus
 
 | Thành viên | Chiến lược | Tổng chunk | Độ dài trung bình | Nhận xét |
